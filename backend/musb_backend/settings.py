@@ -4,16 +4,21 @@ Django settings for musb_backend project.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-musb-dev-key-change-in-production'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-musb-dev-key-fallback')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') or ['*']
 
 INSTALLED_APPS = [
+    'home.apps.HomeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -24,12 +29,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # Local apps
-    'home',
-    'catalog',
-    'offers',
-    'bookings',
-    'employers',
-    'research',
+    'catalog.apps.CatalogConfig',
+    'offers.apps.OffersConfig',
+    'bookings.apps.BookingsConfig',
+    'employers.apps.EmployersConfig',
+    'research.apps.ResearchConfig',
+    'super_admin.apps.SuperAdminConfig',
+    'phlebotomy.apps.PhlebotomyConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +69,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'musb_backend.wsgi.application'
 
-# Database — using default SQLite; user will configure later
+# Database Configuration
+# We use a minimal SQLite backend to satisfy Django's internal requirements, 
+# but all project data is handled via MongoDB (pymongo) in musb_backend/mongodb.py.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -71,12 +79,11 @@ DATABASES = {
     }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+# MongoDB Configuration (used by musb_backend/mongodb.py)
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017')
+MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'musb_db')
+
+
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'

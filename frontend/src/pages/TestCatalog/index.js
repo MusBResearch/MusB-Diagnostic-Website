@@ -9,7 +9,6 @@ import { catalogAPI } from '../../services/api';
 import './Catalog.css';
 
 const SAMPLE_TYPES = ['All', 'Blood', 'Urine', 'Swab'];
-const TURNAROUNDS = ['All', '24h', '48h'];
 
 const TestCatalog = () => {
   const [searchQuery, setSearchQuery] = useState('');

@@ -8,4 +8,13 @@ urlpatterns = [
     path('collaborations/', views.collaborations_list, name='research-collaborations'),
     path('quote/', views.submit_quote, name='research-quote'),
     path('newsletter/', views.newsletter_subscribe, name='research-newsletter'),
+    
+    # Portal Endpoints
+    path('portal/login/', views.login_view, name='research-portal-login'),
+    path('portal/signup/', views.signup_view, name='research-portal-signup'),
+    path('portal/dashboard/', views.dashboard_overview, name='research-portal-dashboard'),
+    path('portal/studies/', views.study_management, name='research-portal-studies'),
+    path('portal/samples/', views.sample_tracking, name='research-portal-samples'),
+    path('portal/reporting/', views.inventory_reporting, name='research-portal-reporting'),
+    path('portal/universities/', views.university_directory, name='research-portal-universities'),
 ]

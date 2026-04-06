@@ -1,0 +1,765 @@
+{
+    "hero": [
+        {
+            "id": 1,
+            "badge_text": "Next-Gen Diagnostics",
+            "title": "Affordable Lab Testing + Mobile Collections + Research-Grade Quality",
+            "subtitle": "Self-pay, employer plans, physicians, facilities, research & biomarker validation.",
+            "_id": "69ced047a8696b55d2821743"
+        }
+    ],
+    "services": [
+        {
+            "id": 1,
+            "title": "Self-Pay Patients",
+            "description": "Direct access to lab testing with transparent pricing.",
+            "icon_name": "User",
+            "link": "/self-pay-lab-tests",
+            "features": [
+                "Test Catalog & Panels",
+                "Annual Health Checkups",
+                "Women's & Metabolic Health",
+                "Thyroid & STD Testing"
+            ],
+            "_id": "69d21844f6e9432117d9fbc0"
+        },
+        {
+            "id": 2,
+            "title": "Employers & HR",
+            "description": "Corporate wellness and pre-employment screening.",
+            "icon_name": "Briefcase",
+            "link": "/employer-health-program",
+            "features": [
+                "4-Tier Plan Comparison",
+                "Onsite Collections (5+ rule)",
+                "Executive & Family Credits",
+                "Retention Benefits"
+            ],
+            "_id": "69d21844f6e9432117d9fbc1"
+        },
+        {
+            "id": 3,
+            "title": "Physicians",
+            "description": "Partner with us for reliable patient diagnostics.",
+            "icon_name": "Stethoscope",
+            "link": "/physicians",
+            "features": [
+                "How to Order & Custom Panels",
+                "Automated Results Delivery",
+                "LIS Integration",
+                "Physician Portal Login"
+            ],
+            "_id": "69d21844f6e9432117d9fbc2"
+        },
+        {
+            "id": 4,
+            "title": "Assisted Living",
+            "description": "On-site laboratory services for your facilities.",
+            "icon_name": "Home",
+            "link": "/assisted-living-testing",
+            "features": [
+                "Recurring Rounds Scheduling",
+                "Roster Management",
+                "Mobile Collection Workflow",
+                "LIS Routing & Portal"
+            ],
+            "_id": "69d21844f6e9432117d9fbc3"
+        },
+        {
+            "id": 5,
+            "title": "Mobile Phlebotomy",
+            "description": "We bring the lab to your home or office.",
+            "icon_name": "Truck",
+            "link": "/mobile-phlebotomy",
+            "features": [
+                "Service Area Map",
+                "Pricing & Travel Fees",
+                "What to Expect",
+                "Book Home Draw"
+            ],
+            "_id": "69d21844f6e9432117d9fbc4"
+        },
+        {
+            "id": 6,
+            "title": "Non-Profits",
+            "description": "Special programs and discounts for community orgs.",
+            "icon_name": "HeartHandshake",
+            "link": "/community-programs",
+            "features": [
+                "Sponsored Screening Events",
+                "Partnership Application",
+                "Affiliate Fundraising Tie-ins"
+            ],
+            "_id": "69d21844f6e9432117d9fbc5"
+        },
+        {
+            "id": 7,
+            "title": "Diagnostics Validation",
+            "description": "Early biomarker validation and testing.",
+            "icon_name": "Microscope",
+            "link": "/early-diagnostics",
+            "features": [
+                "Feasibility & Analytical Testing",
+                "Pilot Clinical Testing Pathway",
+                "Submit NDA & Technology",
+                "Project Tracker Portal"
+            ],
+            "_id": "69d21844f6e9432117d9fbc6"
+        },
+        {
+            "id": 8,
+            "title": "Research Central Lab",
+            "description": "Comprehensive clinical trial lab services.",
+            "icon_name": "Dna",
+            "link": "/research-central-lab",
+            "features": [
+                "Collection & Shipping Support",
+                "Biorepository Tracking",
+                "Academic Collaboration",
+                "Request Quote Portal"
+            ],
+            "_id": "69d21844f6e9432117d9fbc7"
+        }
+    ],
+    "popular_panels": [
+        {
+            "id": 1,
+            "name": "Annual Health Check",
+            "icon_name": "Activity",
+            "price": "150.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbc9"
+        },
+        {
+            "id": 2,
+            "name": "Comprehensive Metabolic",
+            "icon_name": "Droplets",
+            "price": "45.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbca"
+        },
+        {
+            "id": 3,
+            "name": "Advanced Thyroid Panel",
+            "icon_name": "AlertCircle",
+            "price": "85.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbcb"
+        },
+        {
+            "id": 4,
+            "name": "Women's Health Profile",
+            "icon_name": "Heart",
+            "price": "199.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbcc"
+        },
+        {
+            "id": 5,
+            "name": "Complete STD Screening",
+            "icon_name": "ShieldCheck",
+            "price": "130.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbcd"
+        },
+        {
+            "id": 6,
+            "name": "Nutrients & Vitamins",
+            "icon_name": "Zap",
+            "price": "110.00",
+            "link": "/tests",
+            "_id": "69d21844f6e9432117d9fbce"
+        }
+    ],
+    "testimonials": [
+        {
+            "id": 1,
+            "author_name": "Sarah Jenkins",
+            "content": "The mobile phlebotomy service is a game changer! The nurse arrived on time, was extremely professional, and I got my results the next morning without ever leaving my house.",
+            "rating": 5,
+            "is_featured": true,
+            "_id": "69d21844f6e9432117d9fbc8"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "General Wellness",
+            "slug": "general-wellness",
+            "_id": "69ced047a8696b55d2821738"
+        },
+        {
+            "id": 2,
+            "name": "Heart Health",
+            "slug": "heart-health",
+            "_id": "69ced047a8696b55d2821739"
+        },
+        {
+            "id": 3,
+            "name": "Vitamins & Minerals",
+            "slug": "vitamins-minerals",
+            "_id": "69ced047a8696b55d282173a"
+        },
+        {
+            "id": 4,
+            "name": "Kidney Health",
+            "slug": "kidney-health",
+            "_id": "69ced047a8696b55d282173b"
+        },
+        {
+            "id": 5,
+            "name": "Infectious Disease",
+            "slug": "infectious-disease",
+            "_id": "69ced047a8696b55d282173c"
+        }
+    ],
+    "tests": [
+        {
+            "id": 1,
+            "title": "Complete Blood Count (CBC)",
+            "category": 1,
+            "category_name": "General Wellness",
+            "description": "Measures different parts of your blood, including RBC, WBC, and platelets.",
+            "price": "29.00",
+            "preparation": "No fasting required",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "Droplet",
+            "_id": "69ced047a8696b55d282173d"
+        },
+        {
+            "id": 2,
+            "title": "Advanced Lipid Panel",
+            "category": 2,
+            "category_name": "Heart Health",
+            "description": "Checks cholesterol and triglycerides to assess cardiovascular risk.",
+            "price": "49.00",
+            "preparation": "Fasting: 10-12 hrs",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "HeartPulse",
+            "_id": "69ced047a8696b55d282173e"
+        },
+        {
+            "id": 3,
+            "title": "Comprehensive Metabolic Panel",
+            "category": 1,
+            "category_name": "General Wellness",
+            "description": "Provides information about your body's chemical balance and metabolism.",
+            "price": "59.00",
+            "preparation": "Fasting: 8-10 hrs",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "Activity",
+            "_id": "69ced047a8696b55d282173f"
+        },
+        {
+            "id": 4,
+            "title": "Vitamin D Profile",
+            "category": 3,
+            "category_name": "Vitamins & Minerals",
+            "description": "Important for bone health, immune function, and overall wellness.",
+            "price": "39.00",
+            "preparation": "No fasting required",
+            "sample_type": "Blood",
+            "turnaround": "48h",
+            "icon_name": "Bone",
+            "_id": "69ced047a8696b55d2821740"
+        },
+        {
+            "id": 5,
+            "title": "Urinalysis Complete",
+            "category": 4,
+            "category_name": "Kidney Health",
+            "description": "Evaluates physical, chemical, and microscopic properties of urine.",
+            "price": "35.00",
+            "preparation": "Morning sample preferred",
+            "sample_type": "Urine",
+            "turnaround": "24h",
+            "icon_name": "Activity",
+            "_id": "69ced047a8696b55d2821741"
+        },
+        {
+            "id": 6,
+            "title": "Throat Culture Swab",
+            "category": 5,
+            "category_name": "Infectious Disease",
+            "description": "Detects the presence of bacterial or fungal infections in the throat.",
+            "price": "45.00",
+            "preparation": "No food 1 hr prior",
+            "sample_type": "Swab",
+            "turnaround": "48h",
+            "icon_name": "FileWarning",
+            "_id": "69ced047a8696b55d2821742"
+        }
+    ],
+    "offers": [
+        {
+            "id": 1,
+            "title": "Essential Vitamin Profile",
+            "offer_type": "Weekly",
+            "category": "Vitamins",
+            "original_price": "120.00",
+            "discounted_price": "69.00",
+            "includes": [
+                "Vitamin D total",
+                "Vitamin B12",
+                "Iron Panel"
+            ],
+            "time_left": "3d 14h 22m",
+            "_id": "69d21844f6e9432117d9fbb1"
+        },
+        {
+            "id": 2,
+            "title": "Complete Men's/Women's Health",
+            "offer_type": "Monthly",
+            "category": "Metabolic",
+            "original_price": "250.00",
+            "discounted_price": "149.00",
+            "includes": [
+                "Full Hormone Panel",
+                "Comprehensive Metabolic",
+                "CBC & Lipid Profile"
+            ],
+            "time_left": "Ends on Mar 31",
+            "_id": "69d21844f6e9432117d9fbb2"
+        },
+        {
+            "id": 3,
+            "title": "Allergy & Immunity Panel",
+            "offer_type": "Seasonal",
+            "category": "Vitamins",
+            "original_price": "180.00",
+            "discounted_price": "99.00",
+            "includes": [
+                "Environmental Allergens",
+                "IgG / IgE markers",
+                "CRP Inflammation"
+            ],
+            "time_left": "Limited Time",
+            "_id": "69d21844f6e9432117d9fbb3"
+        }
+    ],
+    "employers": [
+        {
+            "company_name": "MusB Health Corp",
+            "email": "employer@musb.com",
+            "password": "MusB123",
+            "plan_name": "Match Program (Tier 2)",
+            "renewal_date": "2027-01-01",
+            "created_at": "2026-03-31T14:09:59.310911",
+            "_id": "69cbd5b70b6b361bd991f4cb"
+        },
+        {
+            "name": "Barenya Prasad Mishra",
+            "company_name": "MusB Diagnostics",
+            "email": "barenyamishra123@gmail.com",
+            "office_location": "4th lane, Carlifornia",
+            "office_contact_number": "+917750067250",
+            "password": "2000@Barenya",
+            "plan_name": "Free Membership",
+            "plan_status": "Active",
+            "renewal_date": "Pending",
+            "created_at": "2026-04-05T08:12:34.240724",
+            "_id": "69d21972038da4c2dc0ce247"
+        }
+    ],
+    "employees": [
+        {
+            "full_name": "Jane Doe",
+            "email": "jane@example.comjjane@example.comane@example.com",
+            "due_date": "2026-12-12",
+            "employer_id": "69cbb2dc8db22af842a81a5a",
+            "status": "Invited",
+            "_id": "69cbb7a85f1adfea49998a1e"
+        },
+        {
+            "full_name": "Barenya Prasad Mishra",
+            "email": "barenyamishra123@gmail.com",
+            "due_date": "2026-03-31",
+            "employer_id": "69cbb0b035c7e3d9b2417994",
+            "status": "Invited",
+            "_id": "69cbca425f1adfea49998a1f"
+        },
+        {
+            "full_name": "Test Invitee",
+            "email": "test@example.com",
+            "due_date": "2026-12-12",
+            "employer_id": "69cbb2dc8db22af842a81a5a",
+            "status": "Invited",
+            "invite_token": "716f987d-e41f-4e95-bb91-b2536f406fe5",
+            "_id": "69cbcf4035007fa94dbd3a7f"
+        },
+        {
+            "full_name": "Barenya",
+            "email": "barenyamishra123@gmail.com",
+            "due_date": "2026-03-31",
+            "employer_id": "69cbb0b035c7e3d9b2417994",
+            "status": "Invited",
+            "invite_token": "8119cb9f-75aa-4834-a788-f4d09fb2bd08",
+            "_id": "69cbd24d35007fa94dbd3a84"
+        },
+        {
+            "full_name": "Barenya",
+            "email": "barenyamishra123@gmail.com",
+            "due_date": "2026-03-31",
+            "employer_id": "69cbb0b035c7e3d9b2417994",
+            "status": "Invited",
+            "invite_token": "8c6eb825-d9ba-48a8-aa92-28dfb48c611b",
+            "_id": "69cbd25135007fa94dbd3a85"
+        },
+        {
+            "full_name": "Barenya",
+            "email": "barenyamishra123@gmail.com",
+            "due_date": "2026-03-31",
+            "employer_id": "69cbb0b035c7e3d9b2417994",
+            "status": "Invited",
+            "invite_token": "fe682339-e18d-467e-97d5-c960add451ea",
+            "_id": "69cbd25235007fa94dbd3a86"
+        },
+        {
+            "full_name": "Barenya",
+            "email": "barenyamishra123@gmail.com",
+            "due_date": "2026-03-31",
+            "employer_id": "69cbb0b035c7e3d9b2417994",
+            "status": "Invited",
+            "invite_token": "066661d2-8d71-4190-83ec-bd69d9575b90",
+            "_id": "69cbd25235007fa94dbd3a87"
+        },
+        {
+            "full_name": "xyz",
+            "email": "info@musbdiagnostics.com",
+            "due_date": "2026-04-01",
+            "employer_id": "69cbd5b70b6b361bd991f4cb",
+            "status": "Invited",
+            "invite_token": "d78c4eaf-d1be-4e99-bd0e-13ba56dbcda0",
+            "_id": "69cc2b3babae593f74c790af"
+        },
+        {
+            "full_name": "musb",
+            "email": "musb@gmail.com",
+            "due_date": "2026-04-02",
+            "employer_id": "69cbd5b70b6b361bd991f4cb",
+            "status": "Invited",
+            "invite_token": "dac06cb7-014e-4b58-bf01-12d8dea7f885",
+            "_id": "69cd4939b084bf71bd845d2c"
+        }
+    ],
+    "credits_wallet": [],
+    "onsite_requests": [
+        {
+            "date": "2026-12-12",
+            "address": "123 Corporate St, Ste 500",
+            "headcount": "510",
+            "notes": "Security gate code 1234",
+            "employer_id": "69cbb2dc8db22af842a81a5a",
+            "status": "Pending Approval",
+            "_id": "69cbb6c45f1adfea49998a1d"
+        }
+    ],
+    "invoices": [],
+    "activity_log": [],
+    "research_studies": [
+        {
+            "title": "Isolation Test 0",
+            "sponsor": "Isolation Corp",
+            "pi_name": "Dr. Isolation",
+            "sample_types": [
+                "Blood"
+            ],
+            "sops": "v1.0",
+            "status": "Active",
+            "study_id": "STUDY-4ABF38",
+            "created_at": "2026-04-03 11:45:36.870653",
+            "_id": "69cfa86081b247b503a9716a"
+        },
+        {
+            "title": "Isolation Test 1",
+            "sponsor": "Isolation Corp",
+            "pi_name": "Dr. Isolation",
+            "sample_types": [
+                "Blood"
+            ],
+            "sops": "v1.0",
+            "status": "Active",
+            "study_id": "STUDY-AC1D48",
+            "created_at": "2026-04-03 11:45:38.933355",
+            "_id": "69cfa86281b247b503a9716b"
+        },
+        {
+            "title": "Isolation Test 2",
+            "sponsor": "Isolation Corp",
+            "pi_name": "Dr. Isolation",
+            "sample_types": [
+                "Blood"
+            ],
+            "sops": "v1.0",
+            "status": "Active",
+            "study_id": "STUDY-805DC9",
+            "created_at": "2026-04-03 11:45:41.030466",
+            "_id": "69cfa86581b247b503a9716c"
+        },
+        {
+            "title": "Beat the bloat",
+            "sponsor": "Musb diagnostics",
+            "pi_name": "Barenya",
+            "sample_types": [
+                "plasma"
+            ],
+            "sops": "clinical",
+            "status": "Active",
+            "study_id": "STUDY-228C4E",
+            "created_at": "2026-04-03 15:45:04.900280",
+            "_id": "69cfe0807eeaba7db71b704f"
+        }
+    ],
+    "research_samples": [
+        {
+            "id": "res-samp-001",
+            "sample_id": "SAMP-X99",
+            "study_id": "STUDY-A102",
+            "type": "Plasma",
+            "barcode": "MUSB-A102-X99",
+            "status": "Stored",
+            "storage_location": {
+                "freezer": "FZ-01",
+                "rack": "R02",
+                "shelf": "S3",
+                "box": "B08",
+                "position": "A1"
+            }
+        },
+        {
+            "study_id": "STUDY-BF5492",
+            "type": "Plasma",
+            "aliquots_count": "2",
+            "barcode": "MUSB-8DEFDF40",
+            "status": "Received",
+            "_id": "69cfbbb97eeaba7db71b704e"
+        }
+    ],
+    "research_shipments": [
+        {
+            "id": "res-ship-001",
+            "shipment_id": "SHIP-882",
+            "study_id": "STUDY-A102",
+            "tracking_number": "UPS-123456789",
+            "status": "In Transit"
+        }
+    ],
+    "research_universities": [
+        {
+            "id": "res-uni-001",
+            "name": "State Health University",
+            "location": "Downtown Campus",
+            "contacts": [
+                "wilsons@shu.edu"
+            ],
+            "distance": "12 miles"
+        }
+    ],
+    "test_categories": [
+        {
+            "id": 1,
+            "name": "General Wellness",
+            "slug": "general-wellness",
+            "_id": "69d21844f6e9432117d9fbb4"
+        },
+        {
+            "id": 2,
+            "name": "Heart Health",
+            "slug": "heart-health",
+            "_id": "69d21844f6e9432117d9fbb5"
+        },
+        {
+            "id": 3,
+            "name": "Vitamins & Minerals",
+            "slug": "vitamins-minerals",
+            "_id": "69d21844f6e9432117d9fbb6"
+        },
+        {
+            "id": 4,
+            "name": "Kidney Health",
+            "slug": "kidney-health",
+            "_id": "69d21844f6e9432117d9fbb7"
+        },
+        {
+            "id": 5,
+            "name": "Infectious Disease",
+            "slug": "infectious-disease",
+            "_id": "69d21844f6e9432117d9fbb8"
+        }
+    ],
+    "lab_tests": [
+        {
+            "id": 1,
+            "title": "Complete Blood Count (CBC)",
+            "category": 1,
+            "category_name": "General Wellness",
+            "description": "Measures different parts of your blood, including RBC, WBC, and platelets.",
+            "price": "29.00",
+            "preparation": "No fasting required",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "Droplet",
+            "_id": "69d21844f6e9432117d9fbb9"
+        },
+        {
+            "id": 2,
+            "title": "Advanced Lipid Panel",
+            "category": 2,
+            "category_name": "Heart Health",
+            "description": "Checks cholesterol and triglycerides to assess cardiovascular risk.",
+            "price": "49.00",
+            "preparation": "Fasting: 10-12 hrs",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "HeartPulse",
+            "_id": "69d21844f6e9432117d9fbba"
+        },
+        {
+            "id": 3,
+            "title": "Comprehensive Metabolic Panel",
+            "category": 1,
+            "category_name": "General Wellness",
+            "description": "Provides information about your body's chemical balance and metabolism.",
+            "price": "59.00",
+            "preparation": "Fasting: 8-10 hrs",
+            "sample_type": "Blood",
+            "turnaround": "24h",
+            "icon_name": "Activity",
+            "_id": "69d21844f6e9432117d9fbbb"
+        },
+        {
+            "id": 4,
+            "title": "Vitamin D Profile",
+            "category": 3,
+            "category_name": "Vitamins & Minerals",
+            "description": "Important for bone health, immune function, and overall wellness.",
+            "price": "39.00",
+            "preparation": "No fasting required",
+            "sample_type": "Blood",
+            "turnaround": "48h",
+            "icon_name": "Bone",
+            "_id": "69d21844f6e9432117d9fbbc"
+        },
+        {
+            "id": 5,
+            "title": "Urinalysis Complete",
+            "category": 4,
+            "category_name": "Kidney Health",
+            "description": "Evaluates physical, chemical, and microscopic properties of urine.",
+            "price": "35.00",
+            "preparation": "Morning sample preferred",
+            "sample_type": "Urine",
+            "turnaround": "24h",
+            "icon_name": "Activity",
+            "_id": "69d21844f6e9432117d9fbbd"
+        },
+        {
+            "id": 6,
+            "title": "Throat Culture Swab",
+            "category": 5,
+            "category_name": "Infectious Disease",
+            "description": "Detects the presence of bacterial or fungal infections in the throat.",
+            "price": "45.00",
+            "preparation": "No food 1 hr prior",
+            "sample_type": "Swab",
+            "turnaround": "48h",
+            "icon_name": "FileWarning",
+            "_id": "69d21844f6e9432117d9fbbe"
+        }
+    ],
+    "hero_content": [
+        {
+            "id": 1,
+            "badge_text": "Next-Gen Diagnostics",
+            "title": "Affordable Lab Testing + Mobile Collections + Research-Grade Quality",
+            "subtitle": "Self-pay, employer plans, physicians, facilities, research & biomarker validation.",
+            "_id": "69d21844f6e9432117d9fbbf"
+        }
+    ],
+    "research_services": [
+        {
+            "id": 1,
+            "title": "Sample Collection & Processing",
+            "description": "Multi-site specimen collection with standardized processing protocols.",
+            "icon_name": "FlaskConical",
+            "_id": "69d21844f6e9432117d9fbcf"
+        },
+        {
+            "id": 2,
+            "title": "Cold Chain Logistics",
+            "description": "Temperature-controlled shipping and chain-of-custody documentation.",
+            "icon_name": "Truck",
+            "_id": "69d21844f6e9432117d9fbd0"
+        },
+        {
+            "id": 3,
+            "title": "Data Management",
+            "description": "Secure data capture, EDC integration, and regulatory-compliant reporting.",
+            "icon_name": "Database",
+            "_id": "69d21844f6e9432117d9fbd1"
+        },
+        {
+            "id": 4,
+            "title": "Regulatory Compliance",
+            "description": "GCP, GLP, and CLIA-compliant testing workflows for clinical trials.",
+            "icon_name": "ShieldCheck",
+            "_id": "69d21844f6e9432117d9fbd2"
+        }
+    ],
+    "biorepository_info": [
+        {
+            "id": 1,
+            "stat_label": "Uptime & Reliability",
+            "stat_value": "99.99%",
+            "description": "Redundant power and monitoring systems.",
+            "_id": "69d21844f6e9432117d9fbd3"
+        },
+        {
+            "id": 2,
+            "stat_label": "Sample Capacity",
+            "stat_value": "500K+",
+            "description": "Ultra-low temperature storage for biospecimens.",
+            "_id": "69d21844f6e9432117d9fbd4"
+        },
+        {
+            "id": 3,
+            "stat_label": "Active Studies",
+            "stat_value": "120+",
+            "description": "Concurrent clinical trial support.",
+            "_id": "69d21844f6e9432117d9fbd5"
+        },
+        {
+            "id": 4,
+            "stat_label": "Turnaround",
+            "stat_value": "< 24h",
+            "description": "Expedited processing for priority studies.",
+            "_id": "69d21844f6e9432117d9fbd6"
+        }
+    ],
+    "research_collaborations": [
+        {
+            "id": 1,
+            "title": "University Partnerships",
+            "description": "Joint research programs with leading academic institutions.",
+            "icon_name": "GraduationCap",
+            "_id": "69d21844f6e9432117d9fbd7"
+        },
+        {
+            "id": 2,
+            "title": "Publication Support",
+            "description": "Assistance with manuscript preparation and peer review submissions.",
+            "icon_name": "BookOpen",
+            "_id": "69d21844f6e9432117d9fbd8"
+        },
+        {
+            "id": 3,
+            "title": "Grant Collaboration",
+            "description": "Sub-award capable laboratory partner for NIH and NSF funded projects.",
+            "icon_name": "Award",
+            "_id": "69d21844f6e9432117d9fbd9"
+        }
+    ]
+}

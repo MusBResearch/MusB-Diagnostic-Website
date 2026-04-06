@@ -38,52 +38,208 @@
   100% { transform: rotate(360deg); }
 }
 
-.home-hero-content {
+.home-hero-container {
   position: relative;
   z-index: 1;
-  max-width: 1400px;
+  max-width: 1200px;
   width: 100%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
   margin: 0 auto;
 }
 
-.hero-offer-banner {
+.home-hero-main {
+  flex: 1;
+  text-align: center;
+  width: 100%;
+}
+
+.home-hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--text-main);
+  margin-bottom: 2rem;
+  letter-spacing: -2px;
+}
+
+.home-hero-title .text-highlight {
+  color: var(--secondary);
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.home-hero-subtitle {
+  font-size: 1.35rem;
+  color: var(--text-muted);
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+.home-hero-actions {
   display: flex;
-  max-width: 1300px;
-  width: 95%;
-  height: 48px;
-  background: linear-gradient(90deg, var(--secondary) 0%, #ff4b55 50%, var(--secondary) 100%);
-  margin: 0 auto 1.5rem;
+  gap: 1.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+}
+
+.hero-search-widget {
+  max-width: 750px;
+  width: 100%;
+  padding: 0.75rem;
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(11, 48, 81, 0.1);
+  box-shadow: 0 15px 35px rgba(11, 48, 81, 0.08);
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+/* Offers Aside Card */
+.hero-offers-aside {
+  flex: 0.8;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-offers-card {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border-radius: 32px;
+  padding: 2.5rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid rgba(211, 32, 41, 0.1);
+  box-shadow: 0 20px 40px rgba(211, 32, 41, 0.08);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-offers-card::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  background-image: var(--watermark-url);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.1;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-offers-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(211, 32, 41, 0.15);
+  border-color: rgba(211, 32, 41, 0.2);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff1f2;
+  color: var(--secondary);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  min-height: 180px;
+}
+
+.offer-glow-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(211, 32, 41, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.offer-tagline {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.offer-display-text {
+  font-size: 1.75rem;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 800;
+}
+
+.offer-footer {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.arrow-circle {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  text-decoration: none;
-  font-size: 1.05rem;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(211, 32, 41, 0.25);
-  overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s;
 }
 
-.hero-offer-banner:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 6px 20px rgba(211, 32, 41, 0.4);
+.hero-offers-card:hover .arrow-circle {
+  transform: translateX(5px);
 }
 
-.offer-text {
+.card-dots {
   display: flex;
-  align-items: center;
   gap: 8px;
+  margin-top: 1rem;
 }
 
-.fade-in-text {
-  animation: bannerFade 0.6s ease-out forwards;
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 50%;
+  transition: all 0.3s;
 }
 
-@keyframes bannerFade {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+.dot.active {
+  width: 20px;
+  background: var(--secondary);
+  border-radius: 10px;
 }
 
 .hero-badge-modern {
@@ -97,7 +253,7 @@
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.875rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(8px);
 }
@@ -116,65 +272,36 @@
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(211, 32, 41, 0); }
 }
 
-.home-hero-title {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--text-main);
-  margin: 0 auto 1.5rem;
-  letter-spacing: -1px;
-  max-width: 900px;
+.fade-in-text {
+  animation: bannerFade 0.6s ease-out forwards;
 }
 
-.home-hero-title span {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+@keyframes bannerFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.home-hero-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  max-width: 700px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.6;
+@media (max-width: 1100px) {
+  .home-hero-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+  .home-hero-main {
+    text-align: center;
+  }
+  .home-hero-actions {
+    justify-content: center;
+  }
+  .hero-search-widget {
+    margin: 0 auto;
+  }
+  .hero-offers-aside {
+    justify-content: center;
+  }
 }
 
-.home-hero-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 3.5rem;
-}
-
-.btn-lg {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-}
-
-.btn-white {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--primary);
-  border-color: rgba(255, 255, 255, 0.9);
-}
-
-.btn-white:hover {
-  background: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-}
-
-/* Search Widget */
-.hero-search-widget {
-  max-width: 650px;
-  margin: 0 auto;
-  padding: 0.5rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
+/* Search Widget - Form & Input Styles */
 
 .hero-search-widget form {
   display: flex;
@@ -239,15 +366,18 @@
 }
 
 .deal-weekly {
-  background: linear-gradient(135deg, #0b3051, #2465a3);
+  background: linear-gradient(145deg, #0b3051, #1a4a7a);
+  box-shadow: 0 20px 40px rgba(11, 48, 81, 0.15);
 }
 
 .deal-monthly {
-  background: linear-gradient(135deg, #d32029, #f7555e);
+  background: linear-gradient(145deg, #d32029, #b91c1c);
+  box-shadow: 0 20px 40px rgba(211, 32, 41, 0.15);
 }
 
 .deal-seasonal {
-  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  background: linear-gradient(145deg, #065f46, #047857);
+  box-shadow: 0 20px 40px rgba(6, 95, 70, 0.15);
 }
 
 .offer-tag {
@@ -272,8 +402,21 @@
   font-weight: 800;
   margin-bottom: 1.5rem;
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.save-badge {
+  background: #ffffff;
+  color: var(--text-main);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .price-strike {
@@ -303,14 +446,39 @@
 .offer-timer {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  padding: 0.5rem;
-  background: rgba(0,0,0,0.15);
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  background: rgba(0,0,0,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
   justify-content: center;
+  margin-top: auto;
+  color: rgba(255,255,255,0.9);
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #ff4757;
+  border-radius: 50%;
+  position: relative;
+}
+
+.live-pulse::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  background-color: #ff4757;
+  animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.7); opacity: 1; }
+  80%, 100% { transform: scale(3); opacity: 0; }
 }
 
 .offer-actions {
@@ -322,7 +490,27 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   flex-grow: 1;
+  font-weight: 800 !important; /* Extra bold for visibility */
+  letter-spacing: 0.5px;
 }
+
+.btn-white {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: var(--primary) !important;
+  transition: all 0.3s ease;
+}
+
+.btn-white:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Themed button text colors for the offers cards */
+.deal-weekly .btn-white { color: #0b3051 !important; }
+.deal-monthly .btn-white { color: #d32029 !important; }
+.deal-seasonal .btn-white { color: #065f46 !important; }
 
 .btn-icon {
   width: 40px; height: 40px;
@@ -338,61 +526,165 @@
 }
 .btn-icon:hover { background: rgba(255,255,255,0.2); }
 
-/* Section D: How It Works */
+/* Section D: How It Works - Grid Flip Card Styles */
 .steps-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 1rem;
-  position: relative;
-  max-width: 1000px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4x2 layout for 8 items */
+  gap: 2rem;
+  max-width: 1300px;
+  margin: 3rem auto;
+  perspective: 2000px;
 }
 
-.step-card {
-  flex: 1;
-  text-align: center;
-  position: relative;
+.step-card-flip {
+  width: 100%;
+  min-height: 280px;
+  cursor: pointer;
   z-index: 2;
-  padding: 0 1rem;
+  position: relative;
+}
+
+.step-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 30px rgba(11, 48, 81, 0.05);
+  border-radius: 20px;
+}
+
+.step-card-flip:hover .step-card-inner {
+  transform: translateY(-5px); /* Gentle lift on hover before flip */
+}
+
+.step-card-flip.is-flipped .step-card-inner {
+  transform: rotateY(180deg);
+}
+
+.step-card-front, .step-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid rgba(11, 48, 81, 0.08);
+}
+
+.step-card-front {
+  z-index: 2;
+}
+
+.step-card-back {
+  background: linear-gradient(145deg, #0b3051, #1a4a7a);
+  color: white;
+  transform: rotateY(180deg);
+  z-index: 1;
+  border: none;
 }
 
 .step-number {
-  width: 40px; height: 40px;
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  width: 32px; height: 32px;
   background: var(--secondary);
   color: white;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.25rem;
-  margin: 0 auto -20px auto;
-  position: relative;
-  z-index: 3;
+  font-weight: 700; font-size: 1rem;
+  z-index: 5;
   box-shadow: 0 4px 10px rgba(211, 32, 41, 0.3);
 }
 
-.step-icon {
-  width: 90px; height: 90px;
-  background: white;
-  border-radius: 20px;
+.step-number-back {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  width: 28px; height: 28px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  color: white;
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 1.5rem auto;
+  font-weight: 700; font-size: 0.8rem;
+}
+
+.step-icon {
+  width: 70px; height: 70px;
+  background: #f8fafc;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.5rem;
   color: var(--primary);
-  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
 }
 
-.step-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; }
-.step-card p { color: var(--text-muted); font-size: 0.95rem; }
-
-.step-connector {
-  flex: 0 0 100px;
-  height: 2px;
-  background: dashed 2px var(--border-color);
-  margin-top: 65px;
+.step-card-flip:hover .step-icon {
+  background: white;
+  color: var(--secondary);
+  transform: rotate(5deg) scale(1.1);
 }
 
-@media (max-width: 768px) {
-  .steps-container { flex-direction: column; align-items: center; gap: 3rem; }
-  .step-connector { display: none; }
+.step-card-front h3 { 
+  font-size: 1.25rem; 
+  color: var(--text-main); 
+  margin-bottom: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.flip-hint {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  margin-top: 1rem;
+  opacity: 0.6;
+}
+
+.step-card-back h3 { color: white; font-size: 1.3rem; margin-bottom: 1rem; font-weight: 700; }
+.step-card-back p { font-size: 0.95rem; line-height: 1.6; opacity: 0.9; margin-bottom: 2rem; }
+
+.btn-link-white {
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.1);
+  padding: 10px 24px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-link-white:hover {
+  background: white;
+  color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 1200px) {
+  .steps-container { grid-template-columns: repeat(3, 1fr); padding: 0 2rem; }
+}
+
+@media (max-width: 900px) {
+  .steps-container { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .steps-container { grid-template-columns: 1fr; }
 }
 
 /* Section E: Trust */
@@ -578,4 +870,9 @@
   .newsletter-form { flex-direction: column; }
   .home-hero-actions { flex-direction: column; }
   .btn-lg { width: 100%; }
+}
+
+/* Global button boldness boost for premium feel */
+.btn {
+  font-weight: 700 !important;
 }

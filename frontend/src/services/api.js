@@ -8,12 +8,13 @@ const API_BASE = '/api';
 
 async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
+  const { headers, ...restOptions } = options;
   const config = {
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...headers,
     },
-    ...options,
+    ...restOptions,
   };
 
   try {
@@ -32,6 +33,7 @@ export const homeAPI = {
   getServices: () => request('/home/services/'),
   getTestimonials: () => request('/home/testimonials/'),
   getPopularPanels: () => request('/home/popular-panels/'),
+  getOffers: () => request('/offers/'),
   subscribeNewsletter: (email) =>
     request('/home/newsletter/', {
       method: 'POST',
@@ -72,6 +74,33 @@ export const bookingsAPI = {
 export const employersAPI = {
   getPlans: () => request('/employers/plans/'),
   getComparison: () => request('/employers/comparison/'),
+  signup: (data) => request('/employers/signup/', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+  getStats: (token) => request('/employers/dashboard/stats/', {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  getEmployees: (token) => request('/employers/employees/', {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  addEmployee: (employeeData, token) => request('/employers/employees/', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(employeeData)
+  }),
+  deleteEmployee: (id, token) => request(`/employers/employees/${id}/`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  }),
+  submitOnsiteRequest: (formData, token) => request('/employers/onsite/', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(formData)
+  }),
+  getBilling: (token) => request('/employers/billing/', {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
 };
 
 // ==================== RESEARCH ====================

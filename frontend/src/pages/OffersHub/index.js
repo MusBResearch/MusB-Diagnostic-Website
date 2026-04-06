@@ -32,16 +32,16 @@ const OffersHub = () => {
     setLoading(false);
   }, [activeType, activeCategory]);
 
-  const handleAddToCart = (offer) => {
+  const handleAddToCart = (offer, uniqueId) => {
     addToCart({
-      id: offer.id,
+      id: uniqueId,
       title: offer.title,
       category: offer.offer_type + ' Deal',
       price: parseFloat(offer.discounted_price),
       sampleType: 'Package',
       turnaround: 'Multiple',
     });
-    setAddedId(offer.id);
+    setAddedId(uniqueId);
     setTimeout(() => setAddedId(null), 1500);
   };
 
@@ -111,38 +111,41 @@ const OffersHub = () => {
               <Loader2 className="animate-spin text-primary" size={48}/>
               <p>Loading offers...</p>
             </div>
-          ) : filteredOffers.length > 0 ? filteredOffers.map(offer => (
-            <div key={offer.id} className="offer-card glass-panel">
-              <div className={`offer-badge badge-${(offer.offer_type || 'weekly').toLowerCase()}`}>{offer.offer_type} Deal</div>
-              <h3 className="offer-card-title">{offer.title}</h3>
-              
-              <div className="offer-price-block">
-                <span className="price-strike">${offer.original_price}</span>
-                <span className="price-new">${offer.discounted_price}</span>
+          ) : filteredOffers.length > 0 ? filteredOffers.map((offer, idx) => {
+            const uniqueId = `offer-${offer.id || idx}`;
+            return (
+              <div key={uniqueId} className="offer-card glass-panel">
+                <div className={`offer-badge badge-${(offer.offer_type || 'weekly').toLowerCase()}`}>{offer.offer_type} Deal</div>
+                <h3 className="offer-card-title">{offer.title}</h3>
+                
+                <div className="offer-price-block">
+                  <span className="price-strike">${offer.original_price}</span>
+                  <span className="price-new">${offer.discounted_price}</span>
+                </div>
+                
+                <ul className="offer-includes-list">
+                  {(offer.includes || []).map((item, i) => (
+                    <li key={i}><CheckCircle size={14} className="text-secondary"/> {item}</li>
+                  ))}
+                </ul>
+                
+                <div className="offer-timer-wrap">
+                  <Clock size={16} /> Ends in: <strong>{offer.time_left}</strong>
+                </div>
+                
+                <div className="offer-actions-grid">
+                  <button className="btn btn-primary action-btn"><Calendar size={16}/> Book Now</button>
+                  <button 
+                    className={`btn ${addedId === uniqueId ? 'btn-secondary' : 'btn-outline'} action-btn`}
+                    onClick={() => handleAddToCart(offer, uniqueId)}
+                  >
+                    <ShoppingCart size={16}/> {addedId === uniqueId ? 'Added!' : 'Add to Cart'}
+                  </button>
+                  <button className="btn btn-light icon-btn" title="Share Offer"><Share2 size={18}/></button>
+                </div>
               </div>
-              
-              <ul className="offer-includes-list">
-                {offer.includes.map((item, idx) => (
-                  <li key={idx}><CheckCircle size={14} className="text-secondary"/> {item}</li>
-                ))}
-              </ul>
-              
-              <div className="offer-timer-wrap">
-                <Clock size={16} /> Ends in: <strong>{offer.time_left}</strong>
-              </div>
-              
-              <div className="offer-actions-grid">
-                <button className="btn btn-primary action-btn"><Calendar size={16}/> Book Now</button>
-                <button 
-                  className={`btn ${addedId === offer.id ? 'btn-secondary' : 'btn-outline'} action-btn`}
-                  onClick={() => handleAddToCart(offer)}
-                >
-                  <ShoppingCart size={16}/> {addedId === offer.id ? 'Added!' : 'Add to Cart'}
-                </button>
-                <button className="btn btn-light icon-btn" title="Share Offer"><Share2 size={18}/></button>
-              </div>
-            </div>
-          )) : (
+            );
+          }) : (
             <div className="no-offers">
                <p>No offers found for the selected criteria. Try adjusting your filters.</p>
                <button className="btn btn-primary" onClick={() => { setActiveType('All'); setActiveCategory('All'); }}>Reset Filters</button>

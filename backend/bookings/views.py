@@ -1,12 +1,13 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+import datetime
+from musb_backend.mongodb import get_appointments_collection, get_lab_tests_collection, transform_doc
 
 
 @api_view(['POST'])
 def create_booking(request):
-    """POST /api/bookings/ — Create a new appointment (mock)."""
-    # Map frontend camelCase to backend snake_case or just use what fits
+    """POST /api/bookings/ — Create a new appointment in MongoDB."""
     data = request.data
     full_name = data.get('fullName') or data.get('full_name')
     phone = data.get('phone')
@@ -22,15 +23,25 @@ def create_booking(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-
+    coll = get_appointments_collection()
+    new_booking = {
+        'full_name': full_name,
+        'phone': phone,
+        'email': email,
+        'test_id': test_id,
+        'preferred_date': date,
+        'preferred_time': time_slot,
+        'visit_type': visit_type,
+        'status': 'pending',
+        'created_at': datetime.datetime.utcnow()
+    }
+    
+    result = coll.insert_one(new_booking)
+    
     return Response(
         {
             'message': 'Booking confirmed! Our team will contact you shortly.',
-            'booking': {
-                'id': 1,
-                **{field: request.data[field] for field in required_fields},
-                'status': 'pending',
-            },
+            'booking': transform_doc(new_booking)
         },
         status=status.HTTP_201_CREATED,
     )
@@ -38,14 +49,10 @@ def create_booking(request):
 
 @api_view(['GET'])
 def bookable_tests(request):
-    """GET /api/bookings/tests/ — Available tests for booking dropdown (mock data)."""
-    tests = [
-        {'value': 'cbc', 'label': 'Complete Blood Count (CBC)'},
-        {'value': 'lipid', 'label': 'Lipid Panel'},
-        {'value': 'cmp', 'label': 'Comprehensive Metabolic Panel'},
-        {'value': 'vitamin-d', 'label': 'Vitamin D Profile'},
-        {'value': 'thyroid', 'label': 'Thyroid Function Test'},
-        {'value': 'pkg-1', 'label': 'Comprehensive Well-Man Profile'},
-        {'value': 'pkg-2', 'label': 'Complete Well-Woman Profile'},
-    ]
-    return Response(tests)
+    """GET /api/bookings/tests/ — Available tests for booking dropdown (from MongoDB)."""
+    coll = get_lab_tests_collection()
+    tests = list(coll.find())
+    
+    # Map for the dropdown format
+    formatted = [{'value': str(t.get('id', t['_id'])), 'label': t['title']} for t in tests]
+    return Response(formatted)

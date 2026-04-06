@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Stethoscope, Calendar, Tag, Heart, Briefcase, Building2, FlaskConical, ChevronDown } from 'lucide-react';
+import { Stethoscope, Calendar, Tag, Heart, Briefcase, Building2, FlaskConical, ChevronDown, LayoutGrid } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import './Navbar.css';
 
@@ -10,6 +10,11 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path ? 'active' : '';
   const isParentActive = (paths) => paths.some(path => location.pathname === path) ? 'active' : '';
+  
+  // Hide global navbar on portal (dashboard) routes
+  if (location.pathname.startsWith('/portal')) {
+    return null;
+  }
 
   return (
     <nav className="navbar glass">
@@ -22,7 +27,7 @@ const Navbar = () => {
             <Link to="/" className={`nav-link ${isActive('/')}`}><Stethoscope className="nav-icon"/> Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/test-catalog" className={`nav-link ${isActive('/test-catalog')}`}><FlaskConical className="nav-icon"/> Catalog</Link>
+            <Link to="/test-catalog" className={`nav-link ${isActive('/test-catalog')}`}><LayoutGrid className="nav-icon"/> Catalog</Link>
           </li>
           <li className="nav-item">
             <Link to="/self-pay-lab-tests" className={`nav-link ${isActive('/self-pay-lab-tests')}`}><Heart className="nav-icon"/> Self-Pay Patients</Link>

@@ -1,0 +1,826 @@
+/* 
+  Phlebotomist Portal & Dashboard Styles
+  Theme: "Stellar Midnight" - Modular Command Center
+*/
+
+:root {
+  --stellar-bg: #0a0c12;
+  --stellar-card: rgba(255, 255, 255, 0.03);
+  --stellar-border: rgba(255, 255, 255, 0.08);
+  --stellar-accent: #6366f1; /* Electric Indigo */
+  --stellar-accent-glow: rgba(99, 102, 241, 0.15);
+  --stellar-secondary: #fda4af; /* Rose Pearl */
+  --stellar-emerald: #10b981;
+  --stellar-amber: #f59e0b;
+  --stellar-text: #ffffff;
+  --stellar-text-muted: #cbd5e1; /* Slate 300 for better visibility */
+  --stellar-sidebar: #0d1117;
+  --stellar-glass: blur(24px);
+}
+
+.phleb-dash-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: var(--stellar-bg);
+  color: var(--stellar-text);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* Sidebar Navigation */
+.phleb-sidebar {
+  width: 280px;
+  background: var(--stellar-sidebar);
+  border-right: 1px solid var(--stellar-border);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 3rem;
+  padding: 0 0.5rem;
+}
+
+.sidebar-logo-icon {
+  background: linear-gradient(135deg, var(--stellar-accent), #4f46e5);
+  color: white;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.sidebar-logo h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--stellar-text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: white;
+}
+
+.nav-item.active {
+  background: var(--stellar-accent);
+  color: white;
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid var(--stellar-border);
+}
+
+/* Main Content Area */
+.phleb-main-content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+}
+
+.phleb-main-content::-webkit-scrollbar { display: none; }
+
+/* Dashboard Modules Layout */
+.dash-modules-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+}
+
+/* Map Module - Radar Animation */
+.map-module {
+  height: 480px;
+  position: relative;
+  overflow: hidden;
+  background: #020408;
+  border-radius: 32px;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.map-grid-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.radar-scan-line {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 50%; height: 2px;
+  background: linear-gradient(90deg, var(--stellar-accent), transparent);
+  transform-origin: left center;
+  animation: radarRotate 4s linear infinite;
+  box-shadow: 0 0 15px var(--stellar-accent);
+}
+
+.radar-ping {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: var(--stellar-accent);
+  border: 2.5px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 25px var(--stellar-accent);
+  animation: pulsePing 2s infinite ease-out;
+}
+
+.radar-ping.target {
+  background: var(--stellar-secondary);
+  box-shadow: 0 0 25px var(--stellar-secondary);
+  border-color: white;
+}
+
+@keyframes radarRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulsePing {
+  0% { transform: scale(1); box-shadow: 0 0 10px var(--stellar-accent); }
+  50% { transform: scale(1.4); box-shadow: 0 0 30px var(--stellar-accent); opacity: 0.8; }
+  100% { transform: scale(1); box-shadow: 0 0 10px var(--stellar-accent); }
+}
+
+/* Workflow Buttons */
+.workflow-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.workflow-btn {
+  padding: 18px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--stellar-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--stellar-text-muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.workflow-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.workflow-btn.active {
+  background: var(--btn-color);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  box-shadow: 0 8px 20px -5px var(--btn-glow);
+}
+
+/* Route List Symmetry */
+.route-item-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--stellar-border);
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+.route-item-grid:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.route-time {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--stellar-accent);
+  letter-spacing: 0.02em;
+}
+
+.route-info h5 {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.route-info p {
+  font-size: 0.65rem;
+  color: var(--stellar-text-muted);
+  font-weight: 600;
+}
+
+.route-status {
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Case Detail Modules */
+.case-file-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.case-profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: sticky;
+  top: 0;
+}
+
+.phleb-card {
+  background: var(--stellar-card);
+  border: 1px solid var(--stellar-border);
+  border-radius: 24px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: var(--stellar-glass);
+}
+
+.case-profile-card {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+.patient-avatar-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-ring {
+  position: absolute;
+  top: -8px; left: -8px; right: -8px; bottom: -8px;
+  border-radius: 36px;
+  border: 1.5px solid var(--stellar-accent);
+  opacity: 0.3;
+  animation: pulseScale 3s infinite;
+}
+
+@keyframes pulseScale {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.05); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.3; }
+}
+
+.case-profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+  margin-top: 2.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--stellar-border);
+  border-bottom: 1px solid var(--stellar-border);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.stat-box {
+  position: relative;
+}
+
+.stat-box:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--stellar-border);
+}
+
+.stat-box h6 {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--stellar-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.stat-box p {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: white;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--stellar-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checklist-item:hover { background: rgba(255,255,255,0.05); }
+.checklist-item.checked { border-color: var(--stellar-emerald); background: rgba(16, 185, 129, 0.05); }
+
+/* Admin Grid */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+  width: 100%;
+}
+
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-4 { grid-column: span 4 / span 4; }
+
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid { display: grid; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+
+.admin-unit-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-unit-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.pulse-line {
+  position: absolute;
+  bottom: 0; left: 0; width: 100%; height: 2px;
+  background: var(--stellar-accent);
+  opacity: 0.15;
+  filter: blur(1px);
+  animation: pulseMove 3s infinite linear;
+}
+
+@keyframes pulseMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.zone-gasket {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gasket-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+
+.gasket-bg { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 4; }
+.gasket-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dasharray 1s ease; }
+
+.gasket-peak { stroke: #ef4444; filter: drop-shadow(0 0 5px #ef4444); }
+.gasket-normal { stroke: #10b981; filter: drop-shadow(0 0 5px #10b981); }
+.gasket-high { stroke: #f59e0b; filter: drop-shadow(0 0 5px #f59e0b); }
+
+.unit-badge {
+  padding: 4px 12px;
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--stellar-text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.unit-badge.active { 
+  background: rgba(16, 185, 129, 0.1); 
+  color: #10b981; 
+  border-color: rgba(16, 185, 129, 0.2); 
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+}
+
+.unit-badge.break { 
+  background: rgba(245, 158, 11, 0.1); 
+  color: #f59e0b; 
+  border-color: rgba(245, 158, 11, 0.2); 
+}
+
+.unit-badge.offline {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+.fleet-opt-hud {
+  padding: 2.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border: 1px solid var(--stellar-border);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.opt-radar-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--stellar-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--stellar-accent);
+  animation: optPulse 2s infinite ease-in-out;
+}
+
+@keyframes optPulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.admin-list-item:last-child { border-bottom: none; }
+
+.clinical-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.action-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hud-action-btn {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--stellar-text-muted);
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-action-btn.indigo { --btn-base: #6366f1; }
+.hud-action-btn.red { --btn-base: #ef4444; }
+
+.hud-action-btn:hover {
+  background: Var(--btn-base);
+  color: white;
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.hud-action-btn svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hud-action-btn:hover svg {
+  transform: scale(1.2) rotate(-5deg);
+}
+
+/* Reused stellar midnight elements */
+.stellar-mesh-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mesh-blob {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.2;
+  transition: all 1s ease-in-out;
+  animation: meshFloat 30s infinite alternate;
+}
+
+/* State Background Shifts */
+.phleb-dash-wrapper.state-indigo .mesh-blob { background: var(--stellar-accent); }
+.phleb-dash-wrapper.state-arrived .mesh-blob { background: var(--stellar-amber); }
+.phleb-dash-wrapper.state-collected .mesh-blob { background: var(--stellar-emerald); }
+.phleb-dash-wrapper.state-issue .mesh-blob { background: #ef4444; opacity: 0.3; filter: blur(80px); }
+
+@keyframes meshFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -30px) scale(1.1); }
+  100% { transform: translate(-30px, 50px) scale(1.2); }
+}
+
+/* Phlebotomist Login Modal - Stellar Midnight Theme */
+.phleb-portal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 4, 8, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.phleb-auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: #0d1117;
+  border: 1px solid var(--stellar-border);
+  border-radius: 32px;
+  padding: 3rem;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+}
+
+.phleb-auth-card.signup-mode {
+  max-width: 800px;
+}
+
+.phleb-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: var(--stellar-text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.phleb-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: rotate(90deg);
+}
+
+.phleb-auth-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px;
+  border-radius: 16px;
+  margin-bottom: 2.5rem;
+  border: 1px solid var(--stellar-border);
+}
+
+.phleb-toggle-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  color: var(--stellar-text-muted);
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.phleb-toggle-btn.active {
+  background: var(--stellar-accent);
+  color: white;
+  box-shadow: 0 4px 15px var(--stellar-accent-glow);
+}
+
+.phleb-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.phleb-subtitle {
+  color: var(--stellar-text-muted);
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.phleb-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.phleb-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.phleb-form-group.full-width {
+  grid-column: span 2;
+}
+
+.phleb-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--stellar-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
+}
+
+.phleb-input {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid var(--stellar-border) !important;
+  color: white !important;
+  padding: 14px 18px !important;
+  border-radius: 14px !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s !important;
+}
+
+.phleb-input:focus {
+  border-color: var(--stellar-accent) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 0 0 4px var(--stellar-accent-glow) !important;
+}
+
+.phleb-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--stellar-accent), #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+}
+
+.phleb-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 25px -8px rgba(99, 102, 241, 0.5);
+}
+
+.phleb-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.phleb-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--stellar-text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.phleb-divider::before,
+.phleb-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--stellar-border);
+}
+
+.phleb-divider:not(:empty)::before { margin-right: 1.5rem; }
+.phleb-divider:not(:empty)::after { margin-left: 1.5rem; }
+
+.phleb-google-btn {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--stellar-border);
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.phleb-google-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .phleb-auth-card {
+    padding: 2rem;
+    border-radius: 24px;
+  }
+  .phleb-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .phleb-form-group.full-width {
+    grid-column: span 1;
+  }
+}

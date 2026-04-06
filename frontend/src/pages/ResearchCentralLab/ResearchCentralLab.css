@@ -2,9 +2,9 @@
 
 /* Hero Section */
 .research-hero {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  background: linear-gradient(145deg, var(--primary) 0%, #031525 100%);
   color: white;
-  padding: 100px 20px 80px;
+  padding: 130px 20px 110px;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -39,11 +39,12 @@
 }
 
 .research-hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  line-height: 1.2;
-  color: var(--secondary);
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  line-height: 1.1;
+  color: #ff3e3e; /* Brighter red for visibility on dark blue */
+  text-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 .research-hero-subtitle {
@@ -142,22 +143,38 @@
 }
 
 .visual-stat {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   padding: 30px;
   border-radius: var(--radius-md);
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .visual-stat h3 {
   color: var(--primary);
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin-bottom: 5px;
+  font-weight: 800;
 }
 
 .visual-stat p {
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.visual-stat-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+  padding: 15px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 40px;
 }
 
 /* Academic Collaboration */
@@ -174,9 +191,20 @@
 }
 
 .pillar {
-  padding: 30px;
-  border-top: 4px solid var(--secondary);
+  padding: 40px 30px;
+  border-top: 5px solid var(--secondary);
   text-align: left;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pillar h4 {
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+  color: var(--primary);
 }
 
 /* Quote & Portal Grid */
@@ -268,7 +296,18 @@
 
 .newsletter-form-inline .btn {
   border-radius: 30px;
+  padding: 12px 30px;
+  white-space: nowrap;
 }
+
+.status-msg {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.status-msg.success { background: rgba(34, 197, 94, 0.1); color: #15803d; }
+.status-msg.error { background: rgba(239, 68, 68, 0.1); color: #b91c1c; }
 
 /* Responsive */
 @media (max-width: 768px) {

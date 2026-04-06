@@ -33,6 +33,17 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar globally for Chrome, Safari, Opera (Webkit) */
+*::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Hide scrollbar globally for Firefox */
+* {
+  scrollbar-width: none !important;
 }
 
 h1,
@@ -124,6 +135,54 @@ main {
 .btn-outline:hover {
   background: var(--primary);
   color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-white {
+  background-color: var(--white);
+  color: var(--primary) !important;
+  border: 2px solid var(--white);
+}
+
+.btn-white:hover {
+  background-color: transparent !important;
+  color: var(--white) !important;
+}
+
+.btn-outline-white {
+  background-color: transparent !important;
+  border: 2px solid var(--white) !important;
+  color: var(--white) !important;
+}
+
+.btn-outline-white:hover {
+  background-color: var(--white) !important;
+  color: var(--primary) !important;
+}
+
+.btn-lg {
+  padding: 1.1rem 3rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-link-white {
+  background: none;
+  border: none;
+  color: var(--white);
+  text-decoration: underline;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.btn-link-white:hover {
+  opacity: 0.8;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
 }
 
 /* Section Containers */

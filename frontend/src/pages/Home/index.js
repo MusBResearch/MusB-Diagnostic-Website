@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Search, ArrowRight, User, Briefcase, Stethoscope, Home as HomeIcon, 
-  Truck, HeartHandshake, Microscope, Dna, MousePointerClick, CalendarCheck, 
-  FileText, ShieldCheck, Award, CheckCircle, Activity, Droplets, Heart, 
+  Truck, HeartHandshake, Microscope, Dna, ShieldCheck, 
+  Award, CheckCircle, Activity, Droplets, Heart, 
   AlertCircle, Zap, Star, Users, Quote, Mail, Clock, Share2, Loader2
 } from 'lucide-react';
 import { homeAPI } from '../../services/api';
 import './Home.css';
+import './DynamicOffers.css';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,40 +16,46 @@ const Home = () => {
   const [services, setServices] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [popularPanels, setPopularPanels] = useState([]);
+  const [offersData, setOffersData] = useState([]);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState({ loading: false, message: '', error: false });
   const [loading, setLoading] = useState(true);
+  const [flippedIdx, setFlippedIdx] = useState(null);
 
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
-  const offers = [
-    "Weekly Deal: Essential Vitamin Profile - $69!",
-    "Monthly Bundle: Complete Men's/Women's Health - $149!",
-    "Seasonal Special: Allergy & Immunity Panel - $99!",
-    "Limited Time: 45% Off All Wellness Packages!"
-  ];
+  const heroOffersList = offersData.length > 0 
+    ? offersData.map(o => `${o.offer_type} Deal: ${o.title} - $${o.discounted_price}!`)
+    : [
+        "Weekly Deal: Essential Vitamin Profile - $69!",
+        "Monthly Bundle: Complete Men's/Women's Health - $149!",
+        "Seasonal Special: Allergy & Immunity Panel - $99!",
+        "Limited Time: 45% Off All Wellness Packages!"
+      ];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentOfferIndex((prev) => (prev + 1) % offers.length);
+      setCurrentOfferIndex((prev) => (prev + 1) % heroOffersList.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [offers.length]);
+  }, [heroOffersList.length]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [heroRes, servicesRes, testimonialsRes, panelsRes] = await Promise.all([
+        const [heroRes, servicesRes, testimonialsRes, panelsRes, offersRes] = await Promise.all([
           homeAPI.getHero(),
           homeAPI.getServices(),
           homeAPI.getTestimonials(),
-          homeAPI.getPopularPanels()
+          homeAPI.getPopularPanels(),
+          homeAPI.getOffers() // This should be added to homeAPI or fetched from offersAPI
         ]);
 
         if (heroRes.ok) setHeroData(heroRes.data[0]);
         if (servicesRes.ok) setServices(servicesRes.data);
         if (testimonialsRes.ok) setTestimonials(testimonialsRes.data);
         if (panelsRes.ok) setPopularPanels(panelsRes.data);
+        if (offersRes.ok) setOffersData(offersRes.data);
       } catch (error) {
         console.error("Error fetching home data:", error);
       } finally {
@@ -91,49 +98,112 @@ const Home = () => {
           <Loader2 className="animate-spin text-primary" size={48}/>
         </div>
       )}
+
+      {/* Dynamic Offers Grid Section */}
+      <section className="dynamic-offers-container">
+        <div className="dynamic-offers-grid">
+          {/* Seasonal Offer (Bigger) */}
+          <Link to="/offers" className="offer-card-new seasonal">
+            <img src="/images/seasonal_offer.webp" alt="Seasonal Offer" />
+            <div className="offer-overlay">
+              <span className="offer-badge-new">Seasonal Special</span>
+              <div className="offer-details-bottom">
+                <h3 className="offer-title-new">
+                  {offersData.find(o => o.offer_type === 'Seasonal')?.title || 'Allergy & Immunity Season'}
+                </h3>
+                <p className="offer-subtitle-new">
+                  <ShieldCheck size={18} /> Specialized panels designed for current health needs.
+                </p>
+                <div className="offer-link-new">
+                  Explore Seasonal Offers <div className="offer-arrow"><ArrowRight size={18}/></div>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Monthly Offer (Small) */}
+          <Link to="/offers" className="offer-card-new monthly">
+            <img src="/images/monthly_offer.webp" alt="Monthly Offer" />
+            <div className="offer-overlay">
+              <span className="offer-badge-new">Monthly Bundle</span>
+              <div className="offer-details-bottom">
+                <h3 className="offer-title-new">
+                  {offersData.find(o => o.offer_type === 'Monthly')?.title || 'Comprehensive Health Bundle'}
+                </h3>
+                <p className="offer-subtitle-new">
+                  <CheckCircle size={18} /> Best value for routine checkups.
+                </p>
+                <div className="offer-link-new">
+                  View Bundle <div className="offer-arrow"><ArrowRight size={18}/></div>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Weekly Offer (Small) */}
+          <Link to="/offers" className="offer-card-new weekly">
+            <img src="/images/weekly_offer.webp" alt="Weekly Offer" />
+            <div className="offer-overlay">
+              <span className="offer-badge-new">Weekly Offer</span>
+              <div className="offer-details-bottom">
+                <h3 className="offer-title-new">
+                  {offersData.find(o => o.offer_type === 'Weekly')?.title || 'New Weekly Essentials'}
+                </h3>
+                <p className="offer-subtitle-new">
+                  <Zap size={18} fill="currentColor" /> Up to 30% off top diagnostic tests.
+                </p>
+                <div className="offer-link-new">
+                  Claim Deal <div className="offer-arrow"><ArrowRight size={18}/></div>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       {/* Section A: Hero + Quick Actions */}
       <section className="home-hero">
         <div className="hero-background"></div>
-        <div className="home-hero-content">
-          <Link to="/offers" className="hero-offer-banner">
-            <span key={currentOfferIndex} className="offer-text fade-in-text">
-              <Zap size={14} className="inline-icon" /> {offers[currentOfferIndex]}
-            </span>
-          </Link>
-          <div className="hero-badge-modern">
-            <span className="live-dot"></span> Next-Gen Diagnostics
-          </div>
-          <h1 className="home-hero-title">
-            {heroData?.title || 'Affordable Lab Testing + Mobile Collections + Research-Grade Quality'}
-          </h1>
-          <p className="home-hero-subtitle">
-            {heroData?.subtitle || 'Self-pay, employer plans, physicians, facilities, research & biomarker validation.'}
-          </p>
-          
-          <div className="home-hero-actions">
-            <Link to="/tests" className="btn btn-primary btn-lg">
-              Browse Tests <ArrowRight size={20} />
-            </Link>
-            <Link to="/book" className="btn btn-secondary btn-lg">
-              Book Appointment
-            </Link>
-            <Link to="/offers" className="btn btn-outline btn-lg btn-white">
-              View Offers
-            </Link>
+        <div className="home-hero-container">
+          <div className="home-hero-main">
+            <div className="hero-badge-modern">
+              <span className="live-dot"></span> Next-Gen Diagnostics
+            </div>
+            <h1 className="home-hero-title">
+              Affordable Lab Testing + Mobile Collections <br />
+              <span className="text-highlight">+ Research-Grade Quality</span>
+            </h1>
+            <p className="home-hero-subtitle">
+              {heroData?.subtitle || 'Self-pay, employer plans, physicians, facilities, research & biomarker validation.'}
+            </p>
+            
+            <div className="home-hero-actions">
+              <Link to="/tests" className="btn btn-primary btn-lg">
+                Browse Tests <ArrowRight size={20} />
+              </Link>
+              <Link to="/book" className="btn btn-secondary btn-lg">
+                Book Appointment
+              </Link>
+              <Link to="/offers" className="btn btn-outline btn-lg">
+                View Offers
+              </Link>
+            </div>
+
+            <div className="hero-search-widget glass">
+              <form onSubmit={handleSearch}>
+                <Search className="search-icon" size={24} />
+                <input 
+                  type="text" 
+                  placeholder="Type to search for tests (e.g., Thyroid, Vitamin D)..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">Search</button>
+              </form>
+            </div>
           </div>
 
-          <div className="hero-search-widget glass">
-            <form onSubmit={handleSearch}>
-              <Search className="search-icon" size={24} />
-              <input 
-                type="text" 
-                placeholder="Type to search for tests (e.g., Thyroid, Vitamin D)..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="btn btn-primary">Search</button>
-            </form>
-          </div>
+
         </div>
       </section>
 
@@ -145,95 +215,75 @@ const Home = () => {
           <p className="section-subtitle">Exclusive weekly, monthly, and seasonal bundles.</p>
         </div>
         <div className="offers-grid">
-          {/* Weekly Deal */}
-          <div className="offer-tile deal-weekly">
-            <div className="offer-tag">Weekly Deal</div>
-            <h3>Essential Vitamin Profile</h3>
-            <div className="offer-price">
-              <span className="price-strike">$120</span> <span className="price-new">$69</span>
-            </div>
-            <ul className="offer-includes">
-              <li><CheckCircle size={16}/> Vitamin D total</li>
-              <li><CheckCircle size={16}/> Vitamin B12</li>
-              <li><CheckCircle size={16}/> Iron Panel</li>
-            </ul>
-            <div className="offer-timer">
-              <Clock size={16} /> Ends in 3d 14h 22m
-            </div>
-            <div className="offer-actions">
-              <button className="btn btn-outline btn-white btn-sm">Book Deal</button>
-              <button className="btn-icon"><Share2 size={18}/></button>
-            </div>
-          </div>
-          
-          {/* Monthly Bundle */}
-          <div className="offer-tile deal-monthly">
-            <div className="offer-tag">Monthly Bundle</div>
-            <h3>Complete Men's/Women's Health</h3>
-            <div className="offer-price">
-              <span className="price-strike">$250</span> <span className="price-new">$149</span>
-            </div>
-            <ul className="offer-includes">
-              <li><CheckCircle size={16}/> Full Hormone Panel</li>
-              <li><CheckCircle size={16}/> Comprehensive Metabolic</li>
-              <li><CheckCircle size={16}/> CBC & Lipid Profile</li>
-            </ul>
-            <div className="offer-timer">
-              <Clock size={16} /> Ends on Mar 31
-            </div>
-            <div className="offer-actions">
-              <button className="btn btn-outline btn-white btn-sm">Book Bundle</button>
-              <button className="btn-icon"><Share2 size={18}/></button>
-            </div>
-          </div>
+          {offersData.map((offer, idx) => (
+            <div key={idx} className={`offer-tile deal-${(offer.offer_type ||'weekly').toLowerCase()}`}>
+              <div className="offer-tag">{offer.offer_type} Deal</div>
+              <h3>{offer.title}</h3>
+              
+              <div className="offer-price">
+                {offer.original_price && <span className="price-strike">${offer.original_price}</span>}
+                <span className="price-new">${offer.discounted_price}</span>
+                {offer.original_price && (
+                  <span className="save-badge">
+                    Save ${(parseFloat(offer.original_price) - parseFloat(offer.discounted_price)).toFixed(0)}
+                  </span>
+                )}
+              </div>
 
-          {/* Seasonal */}
-          <div className="offer-tile deal-seasonal">
-            <div className="offer-tag">Spring Campaign</div>
-            <h3>Allergy & Immunity Panel</h3>
-            <div className="offer-price">
-              <span className="price-strike">$180</span> <span className="price-new">$99</span>
+              <ul className="offer-includes">
+                {(offer.includes || []).map((item, i) => (
+                   <li key={i}><CheckCircle size={16} className="check-icon"/> {item}</li>
+                ))}
+              </ul>
+
+              <div className="offer-timer">
+                <span className="live-pulse"></span>
+                <Clock size={14} /> 
+                <span>Ends in: <strong>{offer.time_left || 'Limited Time'}</strong></span>
+              </div>
+
+              <div className="offer-actions">
+                <Link to="/book" className="btn btn-white btn-sm">Book Deal</Link>
+                <button className="btn-icon" title="Share Offer"><Share2 size={18}/></button>
+              </div>
             </div>
-            <ul className="offer-includes">
-              <li><CheckCircle size={16}/> Environmental Allergens</li>
-              <li><CheckCircle size={16}/> IgG / IgE markers</li>
-              <li><CheckCircle size={16}/> CRP Inflammation</li>
-            </ul>
-            <div className="offer-timer">
-              <Clock size={16} /> Limited Time
-            </div>
-            <div className="offer-actions">
-              <button className="btn btn-outline btn-white btn-sm">Book Seasonal</button>
-              <button className="btn-icon"><Share2 size={18}/></button>
-            </div>
-          </div>
+          ))}
+          {offersData.length === 0 && <p className="full-width text-center">Loading live offers...</p>}
         </div>
       </section>
 
-      {/* Section D: How It Works */}
       <section className="section bg-light-alt how-it-works">
         <h2 className="section-title">Seamless Testing Experience</h2>
         <div className="steps-container">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <div className="step-icon"><MousePointerClick size={40} /></div>
-            <h3>Choose Test</h3>
-            <p>Browse our catalog and order tests online. No doctor visit required for self-pay.</p>
-          </div>
-          <div className="step-connector"></div>
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <div className="step-icon"><CalendarCheck size={40} /></div>
-            <h3>Book Draw</h3>
-            <p>Select in-clinic, mobile phlebotomy at your home, or onsite facility collection.</p>
-          </div>
-          <div className="step-connector"></div>
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <div className="step-icon"><FileText size={40} /></div>
-            <h3>Get Results</h3>
-            <p>View secure digital results fast. Optional medical review available.</p>
-          </div>
+          {services.map((service, idx) => (
+            <React.Fragment key={idx}>
+              <div 
+                className={`step-card-flip ${flippedIdx === idx ? 'is-flipped' : ''}`}
+                onClick={() => setFlippedIdx(flippedIdx === idx ? null : idx)}
+              >
+                <div className="step-card-inner">
+                  {/* Front Side */}
+                  <div className="step-card-front">
+                    <div className="step-number">{idx + 1}</div>
+                    <div className="step-icon">{getIcon(service.icon_name)}</div>
+                    <h3>{service.title}</h3>
+                    <div className="flip-hint">Click to learn more</div>
+                  </div>
+                  
+                  {/* Back Side */}
+                  <div className="step-card-back">
+                    <div className="step-number-back">{idx + 1}</div>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <Link to={service.link || '/tests'} className="btn-link-white" onClick={(e) => e.stopPropagation()}>
+                      View Service <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
+          {services.length === 0 && <p>Loading services...</p>}
         </div>
       </section>
 
@@ -282,7 +332,7 @@ const Home = () => {
           ))}
         </div>
         <div className="center-btn-wrap">
-          <Link to="/tests" className="btn btn-outline">Explore All Panels</Link>
+          <Link to="/tests" className="btn btn-outline">Explore All Panels <ArrowRight size={20} /></Link>
         </div>
       </section>
 
