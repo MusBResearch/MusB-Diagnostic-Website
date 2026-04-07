@@ -19,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  max-width: 1400px;
+  max-width: 1300px; /* Pull stuff together on ultra-wide screens */
   margin: 0 auto;
   width: 100%;
 }
@@ -33,10 +33,11 @@
   color: var(--primary);
   font-family: 'Outfit', sans-serif;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-img {
-  height: 40px;
+  height: 38px;
   width: auto;
   object-fit: contain;
 }
@@ -48,7 +49,7 @@
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.75rem; /* Increased gap for better professional breathing room */
   padding: 0;
   margin: 0;
   list-style: none;
@@ -59,12 +60,12 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-main);
   transition: all 0.3s ease;
   white-space: nowrap;
   position: relative;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -131,6 +132,16 @@
   align-items: center;
   justify-content: flex-end;
   gap: 1rem;
+  flex-shrink: 0;
+  margin-left: 1.5rem; /* Ensure gap between menu and actions */
+}
+
+.nav-actions .btn {
+  white-space: nowrap; /* CRITICAL: Prevents Book Now from wrapping */
+  font-size: 0.9rem;
+  padding: 0.6rem 1.75rem; /* Standardized for premium pill look */
+  height: auto;
+  min-width: fit-content;
 }
 
 @media screen and (max-width: 1024px) {
