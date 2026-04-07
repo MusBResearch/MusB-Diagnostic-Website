@@ -285,22 +285,24 @@
   height: auto; /* Ensure it only takes as much height as needed */
 }
 
-.timeline { display: flex; flex-direction: column; gap: 1.75rem; position: relative; }
-.timeline::before {
+.activity-timeline { display: flex; flex-direction: column; gap: 1.75rem; position: relative; }
+.activity-timeline::before {
   content: ''; position: absolute; left: 1.5rem; top: 0; bottom: 0;
   width: 2px; background: var(--slate-100);
 }
 
-.timeline-item { display: flex; gap: 1.5rem; position: relative; }
-.timeline-dot {
+.activity-item { display: flex; gap: 1.5rem; position: relative; align-items: flex-start !important; }
+.activity-dot {
   width: 12px; height: 12px; border-radius: 50%; background: var(--slate-200);
-  border: 4px solid white; z-index: 1; margin-left: 1.1rem; margin-top: 0.3rem; 
+  border: 4px solid white; z-index: 10; margin-left: 1.1rem; margin-top: 0.35rem; 
+  box-shadow: 0 0 0 1px var(--border-main);
+  flex-shrink: 0;
 }
-.timeline-item.active .timeline-dot { background: var(--emerald-500); }
+.activity-item.active .activity-dot { background: var(--emerald-500); }
 
-.timeline-content { flex-grow: 1; }
-.timeline-text { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
-.timeline-time { font-size: 0.75rem; color: var(--text-secondary); }
+.activity-content { flex-grow: 1; }
+.activity-text { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+.activity-time { font-size: 0.75rem; color: var(--text-secondary); }
 
 /* Table Overhaul */
 .table-container { 

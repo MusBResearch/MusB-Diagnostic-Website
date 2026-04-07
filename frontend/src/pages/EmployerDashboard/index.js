@@ -498,7 +498,7 @@ const OverviewTab = ({ stats, employees }) => {
         {/* Timeline Activity */}
         <div className="activity-feed">
           <h2 className="section-title">System Activity</h2>
-          <div className="timeline">
+          <div className="activity-timeline">
             {[
               { text: 'Onsite Event Verified - 15 Broad St.', time: '2 mins ago', active: true },
               { text: 'Results Uploaded for John Doe', time: '1 hour ago', active: true },
@@ -506,11 +506,11 @@ const OverviewTab = ({ stats, employees }) => {
               { text: 'Billing Statement Generated', time: 'Yesterday', active: false },
               { text: 'New Account Verified', time: 'Mar 28, 2026', active: false },
             ].map((event, i) => (
-              <div key={i} className={`timeline-item ${event.active ? 'active' : ''}`}>
-                <div className="timeline-dot" />
-                <div className="timeline-content">
-                  <p className="timeline-text">{event.text}</p>
-                  <p className="timeline-time">{event.time}</p>
+              <div key={i} className={`activity-item ${event.active ? 'active' : ''}`}>
+                <div className="activity-dot" />
+                <div className="activity-content">
+                  <p className="activity-text">{event.text}</p>
+                  <p className="activity-time">{event.time}</p>
                 </div>
               </div>
             ))}

@@ -1,4 +1,5 @@
 import uuid
+from bson import ObjectId
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -194,7 +195,7 @@ def dashboard_stats(request):
     
     # 4. Plan Info (from employer profile)
     emp_profile_coll = get_employers_collection()
-    profile = emp_profile_coll.find_one({'employer_id': employer_id}) or {}
+    profile = emp_profile_coll.find_one({'_id': ObjectId(employer_id)}) or {}
     
     stats = {
         'plan_status': profile.get('plan_status', 'Active'),
@@ -246,11 +247,16 @@ def employee_detail(request, employee_id):
     coll = get_employees_collection()
     
     # Verify ownership before deleting
-    emp = coll.find_one({'_id': employee_id, 'employer_id': employer_id})
+    try:
+        obj_id = ObjectId(employee_id)
+    except:
+        return Response({'error': 'Invalid ID format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    emp = coll.find_one({'_id': obj_id, 'employer_id': employer_id})
     if not emp:
         return Response({'error': 'Employee not found or unauthorized'}, status=status.HTTP_404_NOT_FOUND)
         
-    success = coll.delete_one({'_id': employee_id})
+    success = coll.delete_one({'_id': obj_id})
     if success:
         return Response({'message': 'Employee removed successfully'})
     return Response({'error': 'Failed to delete'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

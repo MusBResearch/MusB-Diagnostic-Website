@@ -119,7 +119,8 @@ class MockCollection:
             if key == 'title' or isinstance(val, dict):
                 continue
             if val and val != 'All':
-                filtered = [i for i in filtered if i.get(key) == val]
+                # Precise comparison: Convert both to strings (handles ObjectId vs string)
+                filtered = [item for item in filtered if str(item.get(key)) == str(val)]
                 
         return filtered
 
