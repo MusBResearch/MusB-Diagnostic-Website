@@ -226,10 +226,10 @@ const PhlebotomistDashboard = () => {
         {/* 6. Reschedule / report issue */}
         <section className="action-stack mt-8">
           <button className="btn-tactical !w-full !p-6">
-            <Calendar size={18} /> Reschedule Mission
+            <Calendar size={18} /> Reschedule Test
           </button>
           <button className="btn-danger !w-full !p-6">
-            <AlertCircle size={18} /> Report Tactical Issue
+            <AlertCircle size={18} /> Report Issue
           </button>
         </section>
       </div>
