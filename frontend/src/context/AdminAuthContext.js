@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 
 const AdminAuthContext = createContext(null);
 
@@ -22,7 +22,7 @@ export const AdminAuthProvider = ({ children }) => {
     try {
       // Corrected API endpoint base URL should be consistent with proxy or full URL
       // Using relative URL to work with the frontend proxy defined in package.json
-      const response = await axios.post('/api/superadmin/login/', { email, password });
+      const response = await api.post('/api/superadmin/login/', { email, password });
       const { token, user } = response.data;
       
       setAdminToken(token);

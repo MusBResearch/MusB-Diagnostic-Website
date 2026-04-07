@@ -1,0 +1,13 @@
+{
+  "name": "musb-diagnostic-website-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "frontend": "npm start --prefix frontend",
+    "backend": "cd backend && python manage.py runserver",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

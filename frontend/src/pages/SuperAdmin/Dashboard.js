@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedCounter from '../../components/Admin/AnimatedCounter';
 import '../../styles/Admin.css';
@@ -13,7 +13,7 @@ const SuperAdminDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await axios.get('/api/superadmin/dashboard-stats/');
+                const response = await api.get('/api/superadmin/dashboard-stats/');
                 setStats(response.data);
             } catch (err) {
                 console.error('Failed to fetch dashboard stats', err);
