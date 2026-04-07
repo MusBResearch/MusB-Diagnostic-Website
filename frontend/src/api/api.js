@@ -1,25 +1,40 @@
 import axios from 'axios';
 
 /**
- * Central API configuration for the MusB Diagnostic website.
- * Uses the RELATIVE proxy /api during development (configured in package.json/netlify.toml)
- * and can be overridden by REACT_APP_API_URL in production (Netlify UI).
+ * Bulletproof API instance for MusB Diagnostic.
+ * Handles both Netlify Proxy (/api) and Direct Render URL (via env var).
  */
-const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const getBaseURL = () => {
+  // Use the Netlify environment variable (prefixed for React)
+  let url = process.env.REACT_APP_API_URL || '';
+  
+  // Strip trailing slashes to avoid //api/... double-slashing
+  return url.replace(/\/$/, '');
+};
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getBaseURL(),
+  timeout: 10000, // 10 second timeout for Render cold boots
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Response interceptor for better error handling globally
+// Interceptor for production debugging
+api.interceptors.request.use((config) => {
+  console.log(`🌐 [API Request] ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Log errors for debugging
-    console.error('API Error:', error.response?.data || error.message);
+    const errorMsg = error.response?.data?.error || error.response?.data?.detail || error.message;
+    console.error('❌ [API Error]', {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: errorMsg
+    });
     return Promise.reject(error);
   }
 );
