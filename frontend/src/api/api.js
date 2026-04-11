@@ -20,10 +20,29 @@ const api = axios.create({
   },
 });
 
-// Interceptor for production debugging
+// Interceptor for production debugging & Automatic Token Injection
 api.interceptors.request.use((config) => {
-  console.log(`🌐 [API Request] ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
+  // 1. Skip token injection for login/signup endpoints
+  const isAuthEndpoint = config.url.endsWith('/login/') || config.url.endsWith('/signup/');
+  
+  if (!isAuthEndpoint) {
+    // Check for various portal tokens
+    const phlebToken = localStorage.getItem('phleb_token');
+    const employerToken = localStorage.getItem('token');
+    const researchToken = localStorage.getItem('research_token');
+    const superAdminToken = localStorage.getItem('super_admin_token');
+
+    const token = phlebToken || employerToken || researchToken || superAdminToken;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
+  console.log(`🌐 [API Request] ${config.method.toUpperCase()} ${config.url}`);
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 api.interceptors.response.use(

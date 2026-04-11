@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Search, ArrowRight, User, Briefcase, Stethoscope, Home as HomeIcon, 
@@ -7,6 +7,7 @@ import {
   AlertCircle, Zap, Star, Users, Quote, Mail, Clock, Share2, Loader2
 } from 'lucide-react';
 import { homeAPI } from '../../services/api';
+import { motion } from 'framer-motion';
 import './Home.css';
 import './DynamicOffers.css';
 
@@ -22,44 +23,43 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [flippedIdx, setFlippedIdx] = useState(null);
 
-
-  const heroOffersList = offersData.length > 0 
-    ? offersData.map(o => `${o.offer_type} Deal: ${o.title} - $${o.discounted_price}!`)
-    : [
-        "Weekly Deal: Essential Vitamin Profile - $69!",
-        "Monthly Bundle: Complete Men's/Women's Health - $149!",
-        "Seasonal Special: Allergy & Immunity Panel - $99!",
-        "Limited Time: 45% Off All Wellness Packages!"
-      ];
+  // Slideshow indices for each offer type
+  const [seasonalIdx, setSeasonalIdx] = useState(0);
+  const [monthlyIdx, setMonthlyIdx] = useState(0);
+  const [weeklyIdx, setWeeklyIdx] = useState(0);
 
 
+
+  const fetchData = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const [heroRes, servicesRes, testimonialsRes, panelsRes, offersRes] = await Promise.all([
+        homeAPI.getHero(),
+        homeAPI.getServices(),
+        homeAPI.getTestimonials(),
+        homeAPI.getPopularPanels(),
+        homeAPI.getOffers()
+      ]);
+
+      if (heroRes.ok) setHeroData(heroRes.data[0]);
+      if (servicesRes.ok) setServices(servicesRes.data);
+      if (testimonialsRes.ok) setTestimonials(testimonialsRes.data);
+      if (panelsRes.ok) setPopularPanels(panelsRes.data);
+      if (offersRes.ok) setOffersData(offersRes.data);
+    } catch (error) {
+      console.error("Error fetching home data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [heroRes, servicesRes, testimonialsRes, panelsRes, offersRes] = await Promise.all([
-          homeAPI.getHero(),
-          homeAPI.getServices(),
-          homeAPI.getTestimonials(),
-          homeAPI.getPopularPanels(),
-          homeAPI.getOffers() // This should be added to homeAPI or fetched from offersAPI
-        ]);
-
-        if (heroRes.ok) setHeroData(heroRes.data[0]);
-        if (servicesRes.ok) setServices(servicesRes.data);
-        if (testimonialsRes.ok) setTestimonials(testimonialsRes.data);
-        if (panelsRes.ok) setPopularPanels(panelsRes.data);
-        if (offersRes.ok) setOffersData(offersRes.data);
-      } catch (error) {
-        console.error("Error fetching home data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+
+    // Expert fix: Revalidate data when window gains focus (tabs switch)
+    window.addEventListener('focus', fetchData);
+    return () => window.removeEventListener('focus', fetchData);
+  }, [fetchData]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -86,6 +86,130 @@ const Home = () => {
     return <IconComp />;
   };
 
+  // Group offers by type for the slideshow
+  const seasonalOffers = useMemo(() => offersData.filter(o => o.offer_type === 'Seasonal'), [offersData]);
+  const monthlyOffers = useMemo(() => offersData.filter(o => o.offer_type === 'Monthly'), [offersData]);
+  const weeklyOffers = useMemo(() => offersData.filter(o => o.offer_type === 'Weekly'), [offersData]);
+
+  // Auto-rotate slideshows
+  useEffect(() => {
+    if (seasonalOffers.length <= 1) return;
+    const timer = setInterval(() => {
+      setSeasonalIdx(prev => (prev + 1) % seasonalOffers.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [seasonalOffers.length]);
+
+  useEffect(() => {
+    if (monthlyOffers.length <= 1) return;
+    const timer = setInterval(() => {
+      setMonthlyIdx(prev => (prev + 1) % monthlyOffers.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [monthlyOffers.length]);
+
+  useEffect(() => {
+    if (weeklyOffers.length <= 1) return;
+    const timer = setInterval(() => {
+      setWeeklyIdx(prev => (prev + 1) % weeklyOffers.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [weeklyOffers.length]);
+
+  const SLIDE_CONFIG = {
+    Seasonal: {
+      gradient: 'linear-gradient(135deg, #065f46 0%, #10b981 50%, #34d399 100%)',
+      icon: <ShieldCheck size={18} />,
+      subtitle: 'Specialized panels designed for current health needs.',
+      cta: 'Explore Seasonal Offers',
+      emoji: '🌿',
+    },
+    Monthly: {
+      gradient: 'linear-gradient(135deg, #7f1d1d 0%, #e11d48 50%, #fb7185 100%)',
+      icon: <CheckCircle size={18} />,
+      subtitle: 'Best value for routine checkups.',
+      cta: 'View Bundle',
+      emoji: '🔥',
+    },
+    Weekly: {
+      gradient: 'linear-gradient(135deg, #1e3a5f 0%, #3b82f6 50%, #60a5fa 100%)',
+      icon: <Zap size={18} fill="currentColor" />,
+      subtitle: 'Up to 30% off top diagnostic tests.',
+      cta: 'Claim Deal',
+      emoji: '⚡',
+    },
+  };
+
+  // Render a single slideshow card
+  const renderSlideCard = (offersList, currentIdx, setIdx, type, className) => {
+    const config = SLIDE_CONFIG[type];
+    const offer = offersList[currentIdx];
+
+    return (
+      <div className={`offer-card-new ${className}`}>
+        {/* Gradient background instead of images */}
+        <div className="offer-card-bg" style={{ background: config.gradient }}>
+          <div className="offer-card-bg-pattern"></div>
+          {/* Decorative shapes */}
+          <div className="offer-deco offer-deco-1"></div>
+          <div className="offer-deco offer-deco-2"></div>
+          <div className="offer-deco offer-deco-3"></div>
+        </div>
+
+        <div className="offer-overlay">
+          <div className="offer-overlay-top">
+            <span className="offer-badge-new">{config.emoji} {type} {type === 'Monthly' ? 'Bundle' : type === 'Seasonal' ? 'Special' : 'Offer'}</span>
+            {offersList.length > 1 && (
+              <div className="offer-slide-counter">
+                {currentIdx + 1}/{offersList.length}
+              </div>
+            )}
+          </div>
+
+          <div className="offer-details-bottom">
+            {/* Slideshow content with fade transition */}
+            <div className="offer-slide-content" key={offer?.id || currentIdx}>
+              <h3 className="offer-title-new">
+                {offer?.title || `${type} Health Deal`}
+              </h3>
+              {offer && (
+                <div className="offer-slide-price">
+                  <span className="offer-slide-discounted">${offer.discounted_price}</span>
+                  <span className="offer-slide-original">${offer.original_price}</span>
+                  <span className="offer-slide-save">
+                    Save ${(parseFloat(offer.original_price || 0) - parseFloat(offer.discounted_price || 0)).toFixed(0)}
+                  </span>
+                </div>
+              )}
+              <p className="offer-subtitle-new">
+                {config.icon} {offer?.category ? `${offer.category} — ` : ''}{config.subtitle}
+              </p>
+            </div>
+
+            <div className="offer-slide-bottom">
+              <Link to="/offers" className="offer-link-new" onClick={(e) => e.stopPropagation()}>
+                {config.cta} <div className="offer-arrow"><ArrowRight size={18}/></div>
+              </Link>
+
+              {/* Navigation dots */}
+              {offersList.length > 1 && (
+                <div className="offer-dots">
+                  {offersList.map((_, i) => (
+                    <button
+                      key={i}
+                      className={`offer-dot ${i === currentIdx ? 'active' : ''}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIdx(i); }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="home-page fade-in">
       {loading && (
@@ -94,65 +218,35 @@ const Home = () => {
         </div>
       )}
 
-      {/* Dynamic Offers Grid Section */}
+      {/* Dynamic Offers Slideshow Section */}
       <section className="dynamic-offers-container">
         <div className="dynamic-offers-grid">
-          {/* Seasonal Offer (Bigger) */}
-          <Link to="/offers" className="offer-card-new seasonal">
-            <img src="/images/seasonal_offer.webp" alt="Seasonal Offer" />
-            <div className="offer-overlay">
-              <span className="offer-badge-new">Seasonal Special</span>
-              <div className="offer-details-bottom">
-                <h3 className="offer-title-new">
-                  {offersData.find(o => o.offer_type === 'Seasonal')?.title || 'Allergy & Immunity Season'}
-                </h3>
-                <p className="offer-subtitle-new">
-                  <ShieldCheck size={18} /> Specialized panels designed for current health needs.
-                </p>
-                <div className="offer-link-new">
-                  Explore Seasonal Offers <div className="offer-arrow"><ArrowRight size={18}/></div>
-                </div>
-              </div>
-            </div>
-          </Link>
+          {/* Seasonal Slot (Bigger) */}
+          {renderSlideCard(
+            seasonalOffers.length > 0 ? seasonalOffers : [{ title: 'Seasonal Health Deals', offer_type: 'Seasonal' }],
+            seasonalOffers.length > 0 ? seasonalIdx % seasonalOffers.length : 0,
+            setSeasonalIdx,
+            'Seasonal',
+            'seasonal'
+          )}
 
-          {/* Monthly Offer (Small) */}
-          <Link to="/offers" className="offer-card-new monthly">
-            <img src="/images/monthly_offer.webp" alt="Monthly Offer" />
-            <div className="offer-overlay">
-              <span className="offer-badge-new">Monthly Bundle</span>
-              <div className="offer-details-bottom">
-                <h3 className="offer-title-new">
-                  {offersData.find(o => o.offer_type === 'Monthly')?.title || 'Comprehensive Health Bundle'}
-                </h3>
-                <p className="offer-subtitle-new">
-                  <CheckCircle size={18} /> Best value for routine checkups.
-                </p>
-                <div className="offer-link-new">
-                  View Bundle <div className="offer-arrow"><ArrowRight size={18}/></div>
-                </div>
-              </div>
-            </div>
-          </Link>
+          {/* Monthly Slot */}
+          {renderSlideCard(
+            monthlyOffers.length > 0 ? monthlyOffers : [{ title: 'Monthly Health Bundles', offer_type: 'Monthly' }],
+            monthlyOffers.length > 0 ? monthlyIdx % monthlyOffers.length : 0,
+            setMonthlyIdx,
+            'Monthly',
+            'monthly'
+          )}
 
-          {/* Weekly Offer (Small) */}
-          <Link to="/offers" className="offer-card-new weekly">
-            <img src="/images/weekly_offer.webp" alt="Weekly Offer" />
-            <div className="offer-overlay">
-              <span className="offer-badge-new">Weekly Offer</span>
-              <div className="offer-details-bottom">
-                <h3 className="offer-title-new">
-                  {offersData.find(o => o.offer_type === 'Weekly')?.title || 'New Weekly Essentials'}
-                </h3>
-                <p className="offer-subtitle-new">
-                  <Zap size={18} fill="currentColor" /> Up to 30% off top diagnostic tests.
-                </p>
-                <div className="offer-link-new">
-                  Claim Deal <div className="offer-arrow"><ArrowRight size={18}/></div>
-                </div>
-              </div>
-            </div>
-          </Link>
+          {/* Weekly Slot */}
+          {renderSlideCard(
+            weeklyOffers.length > 0 ? weeklyOffers : [{ title: 'Weekly Essentials', offer_type: 'Weekly' }],
+            weeklyOffers.length > 0 ? weeklyIdx % weeklyOffers.length : 0,
+            setWeeklyIdx,
+            'Weekly',
+            'weekly'
+          )}
         </div>
       </section>
 
@@ -203,47 +297,78 @@ const Home = () => {
       </section>
 
 
-      {/* Section C: Live Offers Strip */}
+      {/* Section C: Live Offers Carousel */}
       <section className="section offers-section">
         <div className="offers-header">
           <h2 className="section-title">Live Health Offers</h2>
           <p className="section-subtitle">Exclusive weekly, monthly, and seasonal bundles.</p>
         </div>
-        <div className="offers-grid">
-          {offersData.map((offer, idx) => (
-            <div key={idx} className={`offer-tile deal-${(offer.offer_type ||'weekly').toLowerCase()}`}>
-              <div className="offer-tag">{offer.offer_type} Deal</div>
-              <h3>{offer.title}</h3>
-              
-              <div className="offer-price">
-                {offer.original_price && <span className="price-strike">${offer.original_price}</span>}
-                <span className="price-new">${offer.discounted_price}</span>
-                {offer.original_price && (
-                  <span className="save-badge">
-                    Save ${(parseFloat(offer.original_price) - parseFloat(offer.discounted_price)).toFixed(0)}
-                  </span>
-                )}
-              </div>
 
-              <ul className="offer-includes">
-                {(offer.includes || []).map((item, i) => (
-                   <li key={i}><CheckCircle size={16} className="check-icon"/> {item}</li>
-                ))}
-              </ul>
+        <div className="offers-carousel-wrap">
+          <button
+            className="offers-carousel-arrow left"
+            onClick={() => {
+              const track = document.getElementById('offers-carousel-track');
+              if (track) track.scrollBy({ left: -380, behavior: 'smooth' });
+            }}
+            aria-label="Scroll left"
+          >
+            ‹
+          </button>
 
-              <div className="offer-timer">
-                <span className="live-pulse"></span>
-                <Clock size={14} /> 
-                <span>Ends in: <strong>{offer.time_left || 'Limited Time'}</strong></span>
-              </div>
+          <div className="offers-carousel-track" id="offers-carousel-track">
+            {offersData.map((offer, idx) => (
+              <div key={idx} className={`offer-tile deal-${(offer.offer_type ||'weekly').toLowerCase()}`}>
+                <div className="offer-tag">{offer.offer_type} Deal</div>
+                <h3>{offer.title}</h3>
+                
+                <div className="offer-price">
+                  {offer.original_price && <span className="price-strike">${offer.original_price}</span>}
+                  <span className="price-new">${offer.discounted_price}</span>
+                  {offer.original_price && (
+                    <span className="save-badge">
+                      Save ${(parseFloat(offer.original_price) - parseFloat(offer.discounted_price)).toFixed(0)}
+                    </span>
+                  )}
+                </div>
 
-              <div className="offer-actions">
-                <Link to="/book" className="btn btn-white btn-sm">Book Deal</Link>
-                <button className="btn-icon" title="Share Offer"><Share2 size={18}/></button>
+                <ul className="offer-includes">
+                  {(offer.includes || []).map((item, i) => (
+                     <li key={i}><CheckCircle size={16} className="check-icon"/> {item}</li>
+                  ))}
+                </ul>
+
+                <div className="offer-timer">
+                  <span className="live-pulse"></span>
+                  <Clock size={14} /> 
+                  <span>Ends in: <strong>{offer.time_left || 'Limited Time'}</strong></span>
+                </div>
+
+                <div className="offer-actions">
+                  <Link to="/book" className="btn btn-white btn-sm">Book Deal</Link>
+                  <button className="btn-icon" title="Share Offer"><Share2 size={18}/></button>
+                </div>
               </div>
-            </div>
-          ))}
-          {offersData.length === 0 && <p className="full-width text-center">Loading live offers...</p>}
+            ))}
+            {offersData.length === 0 && <p className="full-width text-center">Loading live offers...</p>}
+          </div>
+
+          <button
+            className="offers-carousel-arrow right"
+            onClick={() => {
+              const track = document.getElementById('offers-carousel-track');
+              if (track) track.scrollBy({ left: 380, behavior: 'smooth' });
+            }}
+            aria-label="Scroll right"
+          >
+            ›
+          </button>
+        </div>
+
+        <div className="offers-view-all">
+          <Link to="/offers" className="btn btn-outline">
+            View All Offers <ArrowRight size={18}/>
+          </Link>
         </div>
       </section>
 
@@ -312,40 +437,65 @@ const Home = () => {
       </section>
 
       {/* Section F: Popular Panels */}
-      <section className="section panels-section">
-        <h2 className="section-title">Popular Test Panels</h2>
+      <section className="section panels-section bg-light-alt">
+        <div className="section-header text-center" style={{ marginBottom: '3rem' }}>
+          <h2 className="section-title">Popular Test Panels</h2>
+          <p className="section-subtitle">Comprehensive health checks trusted by thousands.</p>
+        </div>
         <div className="panels-grid">
           {popularPanels.map((panel, i) => (
             <div key={i} className="panel-card">
-              <div className="panel-card-icon">{getIcon(panel.icon_name)}</div>
-              <h4>{panel.name}</h4>
+              <div className="panel-card-icon-wrap">
+                <div className="panel-card-icon">{getIcon(panel.icon_name)}</div>
+                <h4>{panel.name || panel.title || 'Diagnostic Panel'}</h4>
+              </div>
+              <p className="panel-desc">
+                {panel.description || 'Comprehensive diagnostic testing for early detection and absolute peace of mind.'}
+              </p>
               <div className="panel-bot">
-                <span className="panel-price">${panel.price}</span>
-                <Link to={panel.link} className="btn-link">View Details <ArrowRight size={16}/></Link>
+                <span className="panel-price">${parseFloat(panel.price).toFixed(2)}</span>
+                <Link to={panel.link || '/tests'} className="btn-link">View Details <ArrowRight size={16}/></Link>
               </div>
             </div>
           ))}
         </div>
-        <div className="center-btn-wrap">
-          <Link to="/tests" className="btn btn-outline">Explore All Panels <ArrowRight size={20} /></Link>
+        <div className="center-btn-wrap" style={{ marginTop: '3rem' }}>
+          <Link to="/tests" className="btn btn-outline btn-lg">Explore All Panels <ArrowRight size={20} /></Link>
         </div>
       </section>
 
       {/* Section G: Social proof + community */}
-      <section className="section bg-light-alt community-section">
-        <h2 className="section-title">Trusted by the Community</h2>
+      <section className="section community-section">
+        <div className="community-blob blob-1"></div>
+        <div className="community-blob blob-2"></div>
+
+        <motion.h2 
+          className="section-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          Trusted by the Community
+        </motion.h2>
+
         <div className="community-grid">
-          <div className="testimonials glass">
+          <motion.div 
+            className="testimonials"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <Quote className="quote-icon" size={40} />
             {testimonials.length > 0 ? (
               <>
                 <p className="testimonial-text">"{testimonials[0].content}"</p>
                 <div className="testimonial-author">
-                  <div className="author-avatar"><User size={24}/></div>
-                  <div>
+                  <div className="author-avatar"><User size={28}/></div>
+                  <div className="testimonial-info">
                     <strong>{testimonials[0].author_name}</strong>
                     <div className="stars">
-                      {[...Array(testimonials[0].rating)].map((_, i) => <Star key={i} size={14}/>)}
+                      {[...Array(testimonials[0].rating)].map((_, i) => <Star key={i} size={14} fill="currentColor"/>)}
                     </div>
                   </div>
                 </div>
@@ -353,15 +503,22 @@ const Home = () => {
             ) : (
               <p>No testimonials available.</p>
             )}
-          </div>
-          <div className="community-heroes glass">
-            <Users className="heroes-icon" size={40} />
+          </motion.div>
+
+          <motion.div 
+            className="community-heroes"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="heroes-icon"><Users size={32} /></div>
             <h3>Community Heroes</h3>
             <p>
               Supporting non-profits and study participants across the nation. Over <strong>10,000+</strong> subsidized tests provided for underserved communities and clinical research trials.
             </p>
-            <Link to="/contact" className="btn btn-primary btn-sm">Join Our Mission</Link>
-          </div>
+            <Link to="/contact" className="btn btn-primary">Join Our Mission</Link>
+          </motion.div>
         </div>
       </section>
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { 
   Search, Droplet, Activity, Bone, Filter, Calendar, ShoppingCart, 
-  MessageCircle, Clock, FileWarning, HeartPulse, Loader2
+  MessageCircle, Clock, FileWarning, HeartPulse, Loader2, AlertCircle
 } from 'lucide-react';
 import { catalogAPI } from '../../services/api';
 import './Catalog.css';
@@ -56,7 +56,14 @@ const TestCatalog = () => {
     const timer = setTimeout(() => {
       fetchTests();
     }, 300); // Debounce search
-    return () => clearTimeout(timer);
+
+    // Expert fix: Revalidate data when window gains focus (tabs switch)
+    window.addEventListener('focus', fetchTests);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', fetchTests);
+    };
   }, [fetchTests]);
 
   const handleAddToCart = (test) => {
@@ -165,9 +172,11 @@ const TestCatalog = () => {
                   <div className="meta-item text-secondary">
                     <Droplet size={14}/> {test.sample_type}
                   </div>
-                  <div className="meta-item">
-                    <FileWarning size={14}/> {test.preparation}
-                  </div>
+                  {test.preparation && (
+                    <div className="meta-item">
+                      <AlertCircle size={14}/> {test.preparation}
+                    </div>
+                  )}
                   <div className="meta-item text-muted">
                     <Clock size={14}/> {test.turnaround}
                   </div>

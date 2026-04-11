@@ -31,10 +31,21 @@ const PhlebotomistLogin = ({ isOpen, onClose }) => {
     setLoading(true);
     setError('');
 
+    // Ensure clean login state and trimmed credentials
+    localStorage.removeItem('phleb_token');
+    const emailStr = formData.email.trim();
+    const passwordStr = formData.password.trim();
+
+    console.log(`🚀 [Mobile Phleb] Attempting login for: ${emailStr}...`);
+
     const endpoint = isSignup ? '/api/phleb/signup/' : '/api/phleb/login/';
     
     try {
-      const response = await api.post(endpoint, formData);
+      const response = await api.post(endpoint, {
+        ...formData,
+        email: emailStr,
+        password: passwordStr
+      });
       const data = response.data;
 
       if (response.status === 200 || response.status === 201) {

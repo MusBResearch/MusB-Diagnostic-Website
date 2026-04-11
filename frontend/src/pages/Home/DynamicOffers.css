@@ -1,7 +1,12 @@
+/* ==========================================
+   Dynamic Offers Slideshow — Home Page
+   Fully data-driven from SuperAdmin offers.
+   Each category slot auto-rotates through
+   all offers of that type.
+   ========================================== */
 
 .dynamic-offers-container {
   padding: 4rem 5% 2rem;
-  background: var(--bg-primary);
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -13,6 +18,7 @@
   height: 450px;
 }
 
+/* ====== CARD BASE ====== */
 .offer-card-new {
   position: relative;
   border-radius: 2.5rem;
@@ -27,40 +33,99 @@
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
 }
 
-.offer-card-new img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* ====== GRADIENT BACKGROUND (replaces images) ====== */
+.offer-card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   transition: transform 0.8s ease;
 }
 
-.offer-card-new:hover img {
+.offer-card-new:hover .offer-card-bg {
   transform: scale(1.1);
 }
 
+/* Subtle dot pattern overlay */
+.offer-card-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+/* Decorative floating shapes */
+.offer-deco {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  z-index: 1;
+}
+
+.offer-deco-1 {
+  width: 200px;
+  height: 200px;
+  top: -60px;
+  right: -40px;
+  animation: deco-float 8s ease-in-out infinite;
+}
+
+.offer-deco-2 {
+  width: 120px;
+  height: 120px;
+  bottom: -30px;
+  left: -20px;
+  animation: deco-float 10s ease-in-out infinite reverse;
+}
+
+.offer-deco-3 {
+  width: 80px;
+  height: 80px;
+  top: 40%;
+  left: 60%;
+  background: rgba(255, 255, 255, 0.05);
+  animation: deco-float 12s ease-in-out infinite 2s;
+}
+
+@keyframes deco-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(12px, -15px) scale(1.03); }
+  50% { transform: translate(-8px, 10px) scale(0.97); }
+  75% { transform: translate(15px, 8px) scale(1.01); }
+}
+
+/* ====== OVERLAY ====== */
 .offer-overlay {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 2.5rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.4) 100%);
+  padding: 2rem 2.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0.25) 100%);
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  z-index: 2;
 }
 
+.offer-overlay-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* ====== BADGE ====== */
 .offer-badge-new {
   align-self: flex-start;
-  padding: 0.6rem 1.4rem;
+  padding: 0.5rem 1.25rem;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 100px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -68,25 +133,114 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.offer-title-new {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 0.8rem;
-  line-height: 1.1;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9);
-  letter-spacing: -0.5px;
-  color: #ffcc00; /* Premium Yellow for visibility */
+/* ====== SLIDE COUNTER ====== */
+.offer-slide-counter {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.05em;
 }
 
-.offer-subtitle-new {
-  font-size: 1.15rem;
+/* ====== SLIDE CONTENT (fades in/out) ====== */
+.offer-slide-content {
+  animation: slide-fade-in 0.6s ease-out;
+}
+
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== TITLE ====== */
+.offer-title-new {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+  line-height: 1.15;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  letter-spacing: -0.5px;
+  color: #ffd700;
+}
+
+/* Monthly/Weekly smaller cards get smaller text */
+.monthly .offer-title-new,
+.weekly .offer-title-new {
+  font-size: 1.4rem;
+}
+
+/* ====== PRICE ROW ====== */
+.offer-slide-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.offer-slide-discounted {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  line-height: 1;
+}
+
+.monthly .offer-slide-discounted,
+.weekly .offer-slide-discounted {
+  font-size: 1.5rem;
+}
+
+.offer-slide-original {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: line-through;
   font-weight: 500;
-  opacity: 1;
-  margin-bottom: 1.8rem;
+}
+
+.offer-slide-save {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* ====== SUBTITLE ====== */
+.offer-subtitle-new {
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  gap: 0.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.4;
+}
+
+.monthly .offer-subtitle-new,
+.weekly .offer-subtitle-new {
+  font-size: 0.85rem;
+}
+
+/* ====== BOTTOM ROW ====== */
+.offer-slide-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .offer-link-new {
@@ -94,9 +248,10 @@
   align-items: center;
   gap: 0.8rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #fff;
   transition: gap 0.3s ease;
+  text-decoration: none;
 }
 
 .offer-card-new:hover .offer-link-new {
@@ -113,13 +268,43 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .offer-card-new:hover .offer-arrow {
   transform: rotate(-45deg);
 }
 
-/* Responsive adjustments */
+/* ====== NAVIGATION DOTS ====== */
+.offer-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.offer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.offer-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.offer-dot.active {
+  background: #ffd700;
+  width: 22px;
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* ====== RESPONSIVE ====== */
 @media (max-width: 1200px) {
   .dynamic-offers-grid {
     grid-template-columns: 1fr 1fr;
@@ -129,7 +314,8 @@
     grid-column: span 2;
     height: 400px;
   }
-  .offer-card-new.weekly, .offer-card-new.monthly {
+  .offer-card-new.weekly,
+  .offer-card-new.monthly {
     height: 350px;
   }
 }
@@ -138,14 +324,31 @@
   .dynamic-offers-grid {
     grid-template-columns: 1fr;
   }
-  .offer-card-new.seasonal, .offer-card-new.weekly, .offer-card-new.monthly {
+  .offer-card-new.seasonal,
+  .offer-card-new.weekly,
+  .offer-card-new.monthly {
     grid-column: span 1;
     height: 300px;
   }
   .dynamic-offers-container {
     padding: 2rem 5%;
   }
-  .offer-title-new {
-    font-size: 1.5rem;
+  .offer-title-new,
+  .monthly .offer-title-new,
+  .weekly .offer-title-new {
+    font-size: 1.3rem;
+  }
+  .offer-slide-discounted,
+  .monthly .offer-slide-discounted,
+  .weekly .offer-slide-discounted {
+    font-size: 1.3rem;
+  }
+  .offer-overlay {
+    padding: 1.5rem;
+  }
+  .offer-slide-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

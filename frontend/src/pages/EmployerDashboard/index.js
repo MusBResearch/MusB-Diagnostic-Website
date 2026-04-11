@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Calendar, Wallet, CreditCard, 
   MapPin, LogOut, Menu, X, Bell, Search, Plus, 
-  Download, Filter, ChevronRight, AlertCircle,
-  FileText, CheckCircle2, Clock, Sun, Moon, Share2, Copy, Trash2
+  Download, Filter, ChevronRight, AlertCircle, ArrowRight,
+  FileText, CheckCircle2, Clock, Sun, Moon, Share2, Copy, Trash2, ShieldCheck,
+  Smartphone, QrCode
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { employersAPI } from '../../services/api';
@@ -17,7 +19,8 @@ import AnimatedCounter from '../../components/Admin/AnimatedCounter';
 import './EmployerDashboard.css';
 
 const EmployerDashboard = () => {
-  const { logout, token } = useAuth();
+  const { logout, token, user } = useAuth();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [stats, setStats] = useState(null);
@@ -26,6 +29,64 @@ const EmployerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem('employer-theme') || 'light');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Onboarding Modal State
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(1);
+  const [onboardingPlanId, setOnboardingPlanId] = useState(null);
+  const [onboardingSubmitting, setOnboardingSubmitting] = useState(false);
+  const [onboardingSuccess, setOnboardingSuccess] = useState(false);
+  const [onboardingForm, setOnboardingForm] = useState({
+    company_name: '',
+    num_employees: '1 - 50 Employees',
+    start_date: '',
+    full_name: '',
+    email: '',
+    phone: '',
+    paymentMethod: 'card',
+    cardType: 'credit',
+    card_number: '',
+    expiry: '',
+    cvv: '',
+    billing_address: '',
+    upiId: '',
+  });
+
+  // Check if user came from plan selection
+  useEffect(() => {
+    const planId = location.state?.selectedPlanId;
+    if (planId) {
+      setOnboardingPlanId(planId);
+      setShowOnboarding(true);
+      setOnboardingForm(prev => ({
+        ...prev,
+        company_name: user?.company_name || '',
+        full_name: user?.name || '',
+        email: user?.email || '',
+      }));
+      // Clear the state so refreshing doesn't re-trigger
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, user]);
+
+  const handleOnboardingPayment = async () => {
+    setOnboardingSubmitting(true);
+    try {
+      const res = await employersAPI.selectPlan(onboardingPlanId, token);
+      if (res.ok) {
+        setOnboardingSuccess(true);
+        // Refresh dashboard data to reflect new plan
+        fetchDashboardData();
+      } else {
+        alert('Failed to activate plan: ' + (res.data?.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Payment processing failed. Please try again.');
+    }
+    setOnboardingSubmitting(false);
+  };
+
+  const PLAN_LABELS = { 1: 'Annual Coverage', 2: 'Match Program', 3: 'Free Membership', 4: 'Medical Advice' };
   
   // Theme Toggle Logic
   const toggleTheme = useCallback(() => {
@@ -381,6 +442,191 @@ const EmployerDashboard = () => {
         </div>
       )}
 
+      {/* Onboarding Modal */}
+      {showOnboarding && (
+        <div className="modal-overlay">
+          <div className="onboarding-modal glass" onClick={e => e.stopPropagation()}>
+            <button className="close-btn" style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-secondary)' }} onClick={() => { setShowOnboarding(false); setOnboardingStep(1); setOnboardingSuccess(false); }}>&times;</button>
+
+            {onboardingSuccess ? (
+              <div className="onboarding-success">
+                <div className="success-checkmark"><ShieldCheck size={64} color="#10b981" /></div>
+                <h2>Plan Activated!</h2>
+                <p>Your <strong>{PLAN_LABELS[onboardingPlanId]}</strong> plan is now active. Welcome aboard!</p>
+                <button className="btn btn-primary" style={{ marginTop: '1.5rem', padding: '0.85rem 2.5rem' }} onClick={() => { setShowOnboarding(false); setOnboardingStep(1); setOnboardingSuccess(false); }}>Go to Dashboard</button>
+              </div>
+            ) : (
+              <>
+                <h2 className="onboarding-title">Corporate Plan Onboarding</h2>
+                <p className="onboarding-subtitle">Complete your booking request for <strong>{PLAN_LABELS[onboardingPlanId] || `Plan #${onboardingPlanId}`}</strong></p>
+
+                {/* Step Indicator */}
+                <div className="step-indicator">
+                  <div className={`step-dot ${onboardingStep >= 1 ? 'active' : ''}`}>1</div>
+                  <div className={`step-line ${onboardingStep >= 2 ? 'filled' : ''}`}></div>
+                  <div className={`step-dot ${onboardingStep >= 2 ? 'active' : ''}`}>2</div>
+                </div>
+
+                {onboardingStep === 1 && (
+                  <div className="onboarding-form-step">
+                    <div className="ob-form-group full">
+                      <label>Company Name</label>
+                      <input type="text" value={onboardingForm.company_name} onChange={e => setOnboardingForm({...onboardingForm, company_name: e.target.value})} placeholder="MusB Health Corp" />
+                    </div>
+                    <div className="ob-form-row">
+                      <div className="ob-form-group">
+                        <label>Number of Employees</label>
+                        <select value={onboardingForm.num_employees} onChange={e => setOnboardingForm({...onboardingForm, num_employees: e.target.value})}>
+                          <option>1 - 50 Employees</option>
+                          <option>51 - 200 Employees</option>
+                          <option>201 - 500 Employees</option>
+                          <option>500+ Employees</option>
+                        </select>
+                      </div>
+                      <div className="ob-form-group">
+                        <label>Target Start Date</label>
+                        <input type="date" value={onboardingForm.start_date} onChange={e => setOnboardingForm({...onboardingForm, start_date: e.target.value})} />
+                      </div>
+                    </div>
+                    <div className="ob-form-group full">
+                      <label>Full Name</label>
+                      <input type="text" value={onboardingForm.full_name} onChange={e => setOnboardingForm({...onboardingForm, full_name: e.target.value})} placeholder="Employer" />
+                    </div>
+                    <div className="ob-form-row">
+                      <div className="ob-form-group">
+                        <label>Email Address</label>
+                        <input type="email" value={onboardingForm.email} onChange={e => setOnboardingForm({...onboardingForm, email: e.target.value})} placeholder="employer@musb.com" />
+                      </div>
+                      <div className="ob-form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" value={onboardingForm.phone} onChange={e => setOnboardingForm({...onboardingForm, phone: e.target.value})} placeholder="(555) 000-0000" />
+                      </div>
+                    </div>
+                    <button className="btn btn-primary btn-block" style={{ marginTop: '1.5rem' }} onClick={() => setOnboardingStep(2)}>
+                      Continue to Payment <ArrowRight size={18} />
+                    </button>
+                  </div>
+                )}
+
+                {onboardingStep === 2 && (
+                  <div className="onboarding-form-step">
+                    <div className="payment-notice">
+                      <ShieldCheck size={18} /> Secure simulated payment — no real charges
+                    </div>
+
+                    {/* Payment Method Selector */}
+                    <div className="payment-method-selector">
+                      <button 
+                        className={`method-btn ${onboardingForm.paymentMethod === 'card' ? 'active' : ''}`}
+                        onClick={() => setOnboardingForm({...onboardingForm, paymentMethod: 'card'})}
+                      >
+                        <CreditCard size={20} />
+                        <span>Card</span>
+                      </button>
+                      <button 
+                        className={`method-btn ${onboardingForm.paymentMethod === 'upi' ? 'active' : ''}`}
+                        onClick={() => setOnboardingForm({...onboardingForm, paymentMethod: 'upi'})}
+                      >
+                        <Smartphone size={20} />
+                        <span>UPI</span>
+                      </button>
+                      <button 
+                        className={`method-btn ${onboardingForm.paymentMethod === 'qr' ? 'active' : ''}`}
+                        onClick={() => setOnboardingForm({...onboardingForm, paymentMethod: 'qr'})}
+                      >
+                        <QrCode size={20} />
+                        <span>QR Code</span>
+                      </button>
+                    </div>
+
+                    {/* Conditional Sections */}
+                    {onboardingForm.paymentMethod === 'card' && (
+                      <div className="payment-content-area fade-in">
+                        <div className="card-type-toggle">
+                          <button 
+                            className={`type-btn ${onboardingForm.cardType === 'credit' ? 'active' : ''}`}
+                            onClick={() => setOnboardingForm({...onboardingForm, cardType: 'credit'})}
+                          >
+                            Credit Card
+                          </button>
+                          <button 
+                            className={`type-btn ${onboardingForm.cardType === 'debit' ? 'active' : ''}`}
+                            onClick={() => setOnboardingForm({...onboardingForm, cardType: 'debit'})}
+                          >
+                            Debit Card
+                          </button>
+                        </div>
+                        <div className="ob-form-group full">
+                          <label>Card Number</label>
+                          <input type="text" value={onboardingForm.card_number} onChange={e => setOnboardingForm({...onboardingForm, card_number: e.target.value})} placeholder="4242 4242 4242 4242" maxLength={19} />
+                        </div>
+                        <div className="ob-form-row">
+                          <div className="ob-form-group">
+                            <label>Expiry Date</label>
+                            <input type="text" value={onboardingForm.expiry} onChange={e => setOnboardingForm({...onboardingForm, expiry: e.target.value})} placeholder="MM/YY" maxLength={5} />
+                          </div>
+                          <div className="ob-form-group">
+                            <label>CVV</label>
+                            <input type="text" value={onboardingForm.cvv} onChange={e => setOnboardingForm({...onboardingForm, cvv: e.target.value})} placeholder="123" maxLength={4} />
+                          </div>
+                        </div>
+                        <div className="ob-form-group full">
+                          <label>Billing Address</label>
+                          <input type="text" value={onboardingForm.billing_address} onChange={e => setOnboardingForm({...onboardingForm, billing_address: e.target.value})} placeholder="123 Corporate Blvd, New York, NY" />
+                        </div>
+                      </div>
+                    )}
+
+                    {onboardingForm.paymentMethod === 'upi' && (
+                      <div className="payment-content-area fade-in">
+                        <div className="upi-section">
+                          <div className="ob-form-group full">
+                            <label>UPI ID</label>
+                            <div className="upi-input-wrapper">
+                              <input type="text" value={onboardingForm.upiId} onChange={e => setOnboardingForm({...onboardingForm, upiId: e.target.value})} placeholder="username@bank" />
+                              <button className="verify-upi-btn">Verify</button>
+                            </div>
+                            <p className="upi-hint">Must be registered with a major bank or payment provider.</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {onboardingForm.paymentMethod === 'qr' && (
+                      <div className="payment-content-area fade-in">
+                        <div className="qr-payment-section">
+                          <div className="qr-container">
+                            <QRCode 
+                              value={`upi://pay?pa=musb@upi&pn=MusB%20Diagnostics&am=0.01&cu=INR`}
+                              size={160}
+                              bgColor="transparent"
+                              fgColor="white"
+                              level="M"
+                            />
+                            <div className="qr-overlay-icon"><ShieldCheck size={24} /></div>
+                          </div>
+                          <div className="qr-instructions">
+                            <h4>Scan & Pay</h4>
+                            <p>Use any UPI app to complete the transaction.</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="ob-form-row" style={{ marginTop: '1.5rem' }}>
+                      <button className="btn btn-outline" onClick={() => setOnboardingStep(1)} style={{ flex: 1 }}>Back</button>
+                      <button className="btn btn-primary" onClick={handleOnboardingPayment} disabled={onboardingSubmitting} style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                        {onboardingSubmitting ? 'Processing...' : <><CreditCard size={18}/> Complete Payment</>}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Lifted Modal - Rendered at root to avoid stacking context issues */}
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
@@ -645,19 +891,21 @@ const OnsiteTab = ({ token, onRefresh }) => {
     <div className="onsite-tab">
       <div className="onsite-grid">
         <div className="onsite-form-container glass">
-          <h3>Request Onsite Collection</h3>
-          <p>Schedule a mobile phlebotomy team for your office. (5+ headcount required)</p>
+          <div className="onsite-header">
+            <h3>Request Onsite Collection</h3>
+            <p>Schedule a mobile phlebotomy team for your office. (5+ headcount required)</p>
+          </div>
           
           {submitted ? (
-            <div className="success-message">
-              <CheckCircle2 size={48} color="var(--emerald-500)" />
+            <div className="onsite-success-view">
+              <CheckCircle2 size={64} color="var(--emerald-500)" />
               <h3>Request Submitted!</h3>
-              <p>Our logistics team will verify the date and headcount and contact you within 24 hours.</p>
-              <button onClick={() => setSubmitted(false)} className="btn btn-outline" style={{ marginTop: '1rem' }}>Schedule Another</button>
+              <p>Our logistics team will verify the details and contact you within 24 hours.</p>
+              <button onClick={() => setSubmitted(false)} className="btn btn-outline">Schedule Another</button>
             </div>
           ) : (
             <form className="onsite-form" onSubmit={handleSubmit}>
-              <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="ob-form-row">
                 <div className="form-group">
                   <label>Service Date</label>
                   <input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} required />
@@ -667,37 +915,55 @@ const OnsiteTab = ({ token, onRefresh }) => {
                   <input type="number" min="5" value={formData.headcount} onChange={e => setFormData({...formData, headcount: e.target.value})} required />
                 </div>
               </div>
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              
+              <div className="form-group">
                 <label>Office Address</label>
                 <input type="text" placeholder="123 Corporate St, Ste 500" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} required />
               </div>
-              <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              
+              <div className="form-group">
                 <label>Additional Instructions</label>
                 <textarea rows="3" placeholder="Security gate code, specific department, etc." value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})}></textarea>
               </div>
-              <button type="submit" className="btn btn-primary btn-block">Submit Request</button>
+              
+              <button type="submit" className="btn btn-primary btn-block">
+                Submit Collection Request
+              </button>
             </form>
           )}
         </div>
 
         <div className="onsite-info glass">
-          <h3>Onsite Rules</h3>
-          <ul className="rules-list" style={{ padding: 0 }}>
-            <li style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-              <div className="rule-icon" style={{ background: 'var(--slate-100)', padding: '10px', borderRadius: '8px', color: 'var(--slate-800)' }}><Users size={20}/></div>
-              <p><strong>Min Headcount:</strong> 5 employees same-day.</p>
-            </li>
-            <li style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-              <div className="rule-icon" style={{ background: 'var(--slate-100)', padding: '10px', borderRadius: '8px', color: 'var(--slate-800)' }}><Clock size={20}/></div>
-              <p><strong>Notice Period:</strong> Request at least 48 hours in advance.</p>
-            </li>
-            <li style={{ display: 'flex', gap: '1rem' }}>
-              <div className="rule-icon" style={{ background: 'var(--slate-100)', padding: '10px', borderRadius: '8px', color: 'var(--slate-800)' }}><CheckCircle2 size={20}/></div>
-              <p><strong>Zero Cost:</strong> No travel fees for corporate partners.</p>
-            </li>
-          </ul>
-          <div className="onsite-promo" style={{ marginTop: '2rem', padding: '1.5rem', background: 'var(--emerald-50)', borderRadius: '12px', border: '1px dashed var(--emerald-200)', color: 'var(--emerald-800)' }}>
-            <p>Gathering 10+ employees? We'll provide complimentary breakfast catering during the blood draw session!</p>
+          <h3><AlertCircle size={20} color="var(--emerald-500)"/> Onsite Rules</h3>
+          
+          <div className="rules-list">
+            <div className="rule-item">
+              <div className="rule-icon-box"><Users size={22}/></div>
+              <div className="rule-text">
+                <h4>Min Headcount</h4>
+                <p>A minimum of 5 employees must be scheduled for a single site visit.</p>
+              </div>
+            </div>
+            
+            <div className="rule-item">
+              <div className="rule-icon-box"><Clock size={22}/></div>
+              <div className="rule-text">
+                <h4>Notice Period</h4>
+                <p>Please submit requests at least 48 hours before the desired date.</p>
+              </div>
+            </div>
+            
+            <div className="rule-item">
+              <div className="rule-icon-box"><ShieldCheck size={22}/></div>
+              <div className="rule-text">
+                <h4>Premium Support</h4>
+                <p>Partner accounts benefit from waived dispatch and travel fees.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="onsite-promo-card">
+            <p>Gathering 10+ employees? We'll provide complimentary breakfast catering for the entire team!</p>
           </div>
         </div>
       </div>

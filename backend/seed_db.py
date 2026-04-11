@@ -138,7 +138,47 @@ def seed():
         'services': SERVICES_LIST,
         'testimonials': TESTIMONIALS_LIST,
         'popular_panels': POPULAR_PANELS_LIST,
-        'appointments': [], 
+        'phlebotomists': [
+            {'id': 'PHLEB-01', 'name': 'Sarah J.', 'email': 'sarah@musb.com', 'password': 'MusB@Phleb#2026', 'status': 'Active', 'zone': 'Manhattan'},
+            {'id': 'PHLEB-02', 'name': 'Mike R.', 'email': 'mike@musb.com', 'password': 'MusB@Phleb#2026', 'status': 'On Break', 'zone': 'Brooklyn'},
+            {'id': 'PHLEB-03', 'name': 'Eli W.', 'email': 'eli@musb.com', 'password': 'MusB@Phleb#2026', 'status': 'Offline', 'zone': 'Queens'}
+        ],
+        'appointments': [
+            {
+                'id': 'APP-901',
+                'patient_id': 'PAT-001',
+                'patient': 'A. Smith',
+                'initials': 'AS',
+                'age': 45,
+                'gender': 'M',
+                'time': '09:30 AM',
+                'address': '123 Park Ave, New York, NY',
+                'addr': '123 Park Ave, NY',
+                'status': 'Pending',
+                'associated_facility': 'Manhattan Health',
+                'doctor': 'Dr. Aris Thorne',
+                'instructions': 'Fasting required for 12 hours. Use butterfly needle.',
+                'specimens': ['CBC', 'Metabolic Panel', 'Vitamin D'],
+                'payment_status': 'Paid'
+            },
+            {
+                'id': 'APP-902',
+                'patient_id': 'PAT-002',
+                'patient': 'B. Jones',
+                'initials': 'BJ',
+                'age': 32,
+                'gender': 'F',
+                'time': '11:00 AM',
+                'address': '456 Broadway, New York, NY',
+                'addr': '456 Broadway, NY',
+                'status': 'Pending',
+                'associated_facility': 'Broadway Clinic',
+                'doctor': 'Dr. Elena Vance',
+                'instructions': 'Patient has restricted mobility.',
+                'specimens': ['Lipid Profile', 'Thyroid Panel'],
+                'payment_status': 'Pending'
+            }
+        ], 
         'newsletter_subscribers': [],
         'research_services': RESEARCH_SERVICES,
         'biorepository_info': BIOREPOSITORY_STATS,

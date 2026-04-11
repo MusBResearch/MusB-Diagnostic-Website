@@ -3,6 +3,18 @@ import datetime
 from django.conf import settings
 from musb_backend.mongodb import get_phlebotomists_collection
 
+
+def _phleb_public_id(user_doc):
+    """Match dispatch: assigned_phlebotomist_id uses `id` when present, else Mongo _id."""
+    if not user_doc:
+        return ''
+    uid = user_doc.get('id')
+    if uid is not None and str(uid).strip() != '':
+        return str(uid)
+    raw = user_doc.get('_id')
+    return str(raw) if raw is not None else ''
+
+
 def generate_token(user_payload):
     """Generate a JWT for the phlebotomist."""
     payload = {
@@ -18,12 +30,21 @@ def generate_token(user_payload):
 
 def login_phleb(email, password):
     """Verify phlebotomist credentials and return user info + token."""
+    # Robustness: trim and lower case for email
+    email = email.strip().lower() if email else ""
+    password = password.strip() if password else ""
+    
+    print(f"DEBUG: Phleb Login attempt for {email}")
+    
     # Hardcoded demo user for developer testing
-    if email == 'phleb@musb.com' and password == 'phleb123':
+    if (email == 'phleb@musb.com' or email == 'phleb@musb.com ') and \
+       (password == 'MusB2026' or password == 'MusB2026 '):
+        print("✅ DEBUG: Phlebotomist Demo Login MATCHED!")
         demo_user = {
-            'id': 'demo_phleb_1',
+            # Must match fleet `id` used by super-admin auto-dispatch (PHLEB-01 in mock seed).
+            'id': 'PHLEB-01',
             'email': email,
-            'name': 'Demo Specialist',
+            'name': 'Demo Specialist (Sarah route)',
             'company': 'MusB Field Ops'
         }
         token = generate_token(demo_user)
@@ -35,18 +56,23 @@ def login_phleb(email, password):
     coll = get_phlebotomists_collection()
     user = coll.find_one({'email': email})
     
-    if user and user.get('password') == password:
-        user_data = {
-            'id': str(user['_id']),
-            'email': user['email'],
-            'name': user['name'],
-            'company': user.get('company', 'MusB Logistics')
-        }
-        token = generate_token(user_data)
-        return {
-            'token': token,
-            'user': user_data
-        }
+    if user:
+        print(f"DEBUG: Found user in DB, checking password...")
+        if user.get('password') == password:
+            print("DEBUG: DB Password matched!")
+            user_data = {
+                'id': _phleb_public_id(user),
+                'email': user['email'],
+                'name': user['name'],
+                'company': user.get('company', 'MusB Logistics')
+            }
+            token = generate_token(user_data)
+            return {
+                'token': token,
+                'user': user_data
+            }
+    
+    print("DEBUG: Phleb Login failed.")
     return None
 
 def verify_token(token):

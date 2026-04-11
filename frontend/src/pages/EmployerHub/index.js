@@ -15,6 +15,7 @@ const EmployerHub = () => {
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Signup
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -46,10 +47,10 @@ const EmployerHub = () => {
   }, [location]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !showLoginModal) {
       navigate('/portal/employer');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, showLoginModal]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -72,7 +73,7 @@ const EmployerHub = () => {
     const result = await login(email, password);
     if (result.success) {
       setShowLoginModal(false);
-      navigate('/portal/employer');
+      navigate('/portal/employer', { state: { selectedPlanId } });
     } else {
       setAuthError(result.error);
     }
@@ -88,7 +89,7 @@ const EmployerHub = () => {
       const loginRes = await login(signupData.email, signupData.password);
       if (loginRes.success) {
         setShowLoginModal(false);
-        navigate('/portal/employer');
+        navigate('/portal/employer', { state: { selectedPlanId } });
       }
     } else {
       setAuthError(res.data?.error || 'Signup failed');
@@ -104,6 +105,11 @@ const EmployerHub = () => {
       <div className="employer-page fade-in">
       {/* Hero Section */}
       <section className="employer-hero">
+        <div className="hero-bg-shapes">
+          <div className="hero-shape hero-shape-1"></div>
+          <div className="hero-shape hero-shape-2"></div>
+          <div className="hero-shape hero-shape-3"></div>
+        </div>
         <div className="employer-hero-content">
           <div className="hero-badge-corporate">Corporate Health Programs</div>
           <h1 className="employer-hero-title">
@@ -198,7 +204,7 @@ const EmployerHub = () => {
                     <li key={feat.id}><CheckCircle size={16}/> {feat.text}</li>
                   ))}
                 </ul>
-                <button onClick={() => { setShowLoginModal(true); setIsLogin(false); }} className={`btn ${plan.is_featured ? 'btn-primary' : 'btn-outline'} plan-btn`}>
+                <button onClick={() => { setSelectedPlanId(plan.id); setShowLoginModal(true); setIsLogin(false); }} className={`btn ${plan.is_featured ? 'btn-primary' : 'btn-outline'} plan-btn`}>
                   Select Plan {plan.id}
                 </button>
               </div>

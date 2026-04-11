@@ -5,5 +5,7 @@ urlpatterns = [
     path('signup/', views.signup_view, name='phleb-signup'),
     path('login/', views.login_view, name='phleb-login'),
     path('dashboard/', views.dashboard_stats, name='phleb-dashboard'),
-    path('mission/<str:mission_id>/status/', views.update_mission_status, name='phleb-mission-status'),
+    path('test/<str:test_id>/status/', views.update_test_status, name='phleb-test-status'),
+    path('profile/', views.update_profile, name='phleb-profile-update'),
+    path('heartbeat/', views.heartbeat, name='phleb-heartbeat'),
 ]

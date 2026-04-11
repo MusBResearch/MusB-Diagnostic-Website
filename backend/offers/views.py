@@ -5,7 +5,7 @@ from musb_backend.mongodb import get_offers_collection, transform_doc
 
 @api_view(['GET'])
 def offers_list(request):
-    """GET /api/offers/ — List active offers with optional filtering (from MongoDB)."""
+    """GET /api/offers/ — List ACTIVE offers with optional filtering (from MongoDB)."""
     coll = get_offers_collection()
     query = {}
 
@@ -18,7 +18,9 @@ def offers_list(request):
         query['category'] = category
 
     docs = list(coll.find(query))
-    return Response([transform_doc(d) for d in docs])
+    # Only return active offers on the public API
+    active_docs = [d for d in docs if d.get('is_active', True)]
+    return Response([transform_doc(d) for d in active_docs])
 
 
 @api_view(['GET'])
@@ -27,7 +29,7 @@ def offer_detail(request, pk):
     coll = get_offers_collection()
     try:
         doc = coll.find_one({'id': int(pk)})
-        if doc:
+        if doc and doc.get('is_active', True):
             return Response(transform_doc(doc))
     except (ValueError, TypeError):
         pass

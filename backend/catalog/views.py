@@ -17,7 +17,7 @@ def categories_list(request):
 def tests_list(request):
     """GET /api/catalog/tests/ — List tests with filtering (from MongoDB)."""
     coll = get_lab_tests_collection()
-    query = {}
+    query = {'is_active': {'$ne': False}}  # Show active by default (handles missing field as well)
 
     search = request.query_params.get('search')
     if search:

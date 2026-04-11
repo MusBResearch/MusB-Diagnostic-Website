@@ -23,12 +23,17 @@ import SuperAdminLayout from './components/Admin/SuperAdminLayout.js';
 import SuperAdminRoute from './components/ProtectedRoute/SuperAdminRoute.js';
 import SuperAdminLogin from './pages/SuperAdmin/Login.js';
 import SuperAdminDashboard from './pages/SuperAdmin/Dashboard.js';
+import OffersEngine from './pages/SuperAdmin/OffersEngine.js';
+import CatalogManager from './pages/SuperAdmin/CatalogManager.js';
+import DispatchManager from './pages/SuperAdmin/DispatchManager.js';
+import PhlebotomyFleet from './pages/SuperAdmin/PhlebotomyFleet.js';
 import EmployeeEnrollment from './pages/EmployeeEnrollment/index.js';
 import MobilePhlebotomy from './pages/MobilePhlebotomy/index.js';
 import AssistedLiving from './pages/AssistedLiving/index.js';
 import CommunityPrograms from './pages/CommunityPrograms/index.js';
 import PhysicianPortal from './pages/PhysicianPortal/index.js';
 import EarlyDiagnostics from './pages/EarlyDiagnostics/index.js';
+import SelfPayPatients from './pages/SelfPay/index.js';
 import PhlebotomistDashboard from './pages/MobilePhlebotomy/Dashboard.js';
 import PhlebotomistLogin from './pages/MobilePhlebotomy/Login.js';
 
@@ -63,9 +68,10 @@ function App() {
                 <Route path="dashboard" element={<SuperAdminDashboard />} />
                 <Route path="identity" element={<PlaceholderPage title="Identity & Access" />} />
                 <Route path="cms" element={<PlaceholderPage title="Website/CMS Oversight" />} />
-                <Route path="commerce" element={<PlaceholderPage title="Commerce Management" />} />
-                <Route path="offers" element={<PlaceholderPage title="Offers Engine" />} />
-                <Route path="appointments" element={<PlaceholderPage title="Appointments & Routing" />} />
+                <Route path="commerce" element={<CatalogManager />} />
+                <Route path="offers" element={<OffersEngine />} />
+                <Route path="fleet" element={<PhlebotomyFleet />} />
+                <Route path="appointments" element={<DispatchManager />} />
                 <Route path="integrations" element={<PlaceholderPage title="Integrations" />} />
                 <Route path="crm" element={<PlaceholderPage title="CRM & Marketing" />} />
                 <Route path="portals" element={<PlaceholderPage title="Portals Management" />} />
@@ -116,7 +122,7 @@ function App() {
                     <Route path="/community-programs" element={<CommunityPrograms />} />
                     <Route path="/physicians" element={<PhysicianPortal />} />
                     <Route path="/early-diagnostics" element={<EarlyDiagnostics />} />
-                    <Route path="/self-pay-lab-tests" element={<TestCatalog />} />
+                    <Route path="/self-pay-lab-tests" element={<SelfPayPatients />} />
                     
                     {/* Fallback 404 Route */}
                     <Route path="*" element={<PlaceholderPage />} />

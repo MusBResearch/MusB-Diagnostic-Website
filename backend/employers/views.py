@@ -294,3 +294,46 @@ def onsite_requests(request):
         data['status'] = 'Pending Approval'
         coll.insert_one(data)
         return Response({'message': 'Onsite request submitted'}, status=status.HTTP_201_CREATED)
+
+
+# --- Plan Selection Endpoint ---
+
+PLAN_NAMES = {
+    1: 'Annual Coverage',
+    2: 'Match Program',
+    3: 'Free Membership',
+    4: 'Medical Advice',
+}
+
+@api_view(['POST'])
+def select_plan(request):
+    """POST /api/employers/select-plan/ — Activate a chosen plan for the employer."""
+    employer_payload = get_current_employer(request)
+    if not employer_payload:
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    plan_id = request.data.get('plan_id')
+    if not plan_id or int(plan_id) not in PLAN_NAMES:
+        return Response({'error': 'Invalid plan_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+    plan_name = PLAN_NAMES[int(plan_id)]
+    employer_id = employer_payload['employer_id']
+
+    emp_coll = get_employers_collection()
+    renewal = (datetime.datetime.utcnow() + datetime.timedelta(days=365)).strftime('%b %d, %Y')
+
+    emp_coll.update_one(
+        {'_id': ObjectId(employer_id)},
+        {'$set': {
+            'plan_name': plan_name,
+            'plan_status': plan_name,
+            'renewal_date': renewal,
+            'plan_activated_at': datetime.datetime.utcnow(),
+        }}
+    )
+
+    return Response({
+        'message': f'Plan "{plan_name}" activated successfully.',
+        'plan_name': plan_name,
+        'renewal_date': renewal,
+    })

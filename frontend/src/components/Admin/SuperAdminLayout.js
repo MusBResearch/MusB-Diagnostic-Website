@@ -24,9 +24,10 @@ const SuperAdminLayout = () => {
         {
             label: 'Commerce & Ops',
             items: [
-                { path: '/superadmin/commerce', label: 'Commerce', icon: '💰' },
+                { path: '/superadmin/commerce', label: 'Catalog Mgt', icon: '🧪' },
                 { path: '/superadmin/offers', label: 'Offers Engine', icon: '🏷️' },
-                { path: '/superadmin/appointments', label: 'Appointments', icon: '📅' },
+                { path: '/superadmin/fleet', label: 'Phlebotomy Fleet', icon: '🚑' },
+                { path: '/superadmin/appointments', label: 'Dispatch Center', icon: '📅' },
             ]
         },
         {

@@ -307,7 +307,9 @@
                 "Iron Panel"
             ],
             "time_left": "3d 14h 22m",
-            "_id": "69d4d39c7cd301b7982d045f"
+            "_id": "69d4d39c7cd301b7982d045f",
+            "is_active": true,
+            "updated_at": "2026-04-09T00:10:13.238757"
         },
         {
             "id": 2,
@@ -338,36 +340,160 @@
             ],
             "time_left": "Limited Time",
             "_id": "69d4d39c7cd301b7982d0461"
+        },
+        {
+            "id": 4,
+            "title": "Thyroid Test",
+            "offer_type": "Weekly",
+            "category": "Thyroid",
+            "original_price": "80.00",
+            "discounted_price": "59.00",
+            "includes": [
+                "1"
+            ],
+            "time_left": "Limited",
+            "is_active": true,
+            "created_at": "2026-04-09T00:14:14.520310",
+            "updated_at": "2026-04-09T00:14:14.521061",
+            "_id": "69d6a1feb8f3e982e3f63819"
+        },
+        {
+            "id": 5,
+            "title": "Vitamin  Deficiency",
+            "offer_type": "Monthly",
+            "category": "Vitamins",
+            "original_price": "100.00",
+            "discounted_price": "88.00",
+            "includes": [
+                "1"
+            ],
+            "time_left": "2days",
+            "is_active": true,
+            "created_at": "2026-04-09T00:22:02.598581",
+            "updated_at": "2026-04-09T00:22:12.473157",
+            "_id": "69d6a3d2b8f3e982e3f6381a"
+        },
+        {
+            "id": 6,
+            "title": "Seams Study",
+            "offer_type": "Seasonal",
+            "category": "Women's",
+            "original_price": "200.00",
+            "discounted_price": "155.00",
+            "includes": [
+                "vitamin",
+                "blood"
+            ],
+            "time_left": "7days",
+            "is_active": true,
+            "created_at": "2026-04-09T00:41:29.759372",
+            "updated_at": "2026-04-09T00:41:29.760245",
+            "_id": "69d6a861b8f3e982e3f6381b"
+        },
+        {
+            "id": 7,
+            "title": "vitamin",
+            "offer_type": "Weekly",
+            "category": "Vitamins",
+            "original_price": "100",
+            "discounted_price": "85",
+            "includes": [
+                "bolld test",
+                "before food"
+            ],
+            "time_left": "2days",
+            "is_active": true,
+            "created_at": "2026-04-09T20:50:55.865412",
+            "updated_at": "2026-04-09T20:52:06.166210",
+            "_id": "69d7c3d79901f6333c7b81f4"
         }
     ],
     "phlebotomists": [
         {
-            "id": "PHLEB-01",
-            "name": "Sarah J.",
-            "email": "sarah@musb.com",
-            "status": "Active",
-            "zone": "Manhattan"
+            "id": "5",
+            "name": "Situn",
+            "email": "mishra@musb.com",
+            "password": "MusB1263",
+            "phone": "",
+            "zone": "Manhattan Core",
+            "status": "Registered",
+            "is_online": true,
+            "rating": 5.0,
+            "tests_conducted": 1,
+            "performance": {
+                "punctuality": 100,
+                "professionalism": 100,
+                "painless_draw": 100
+            },
+            "reviews": [],
+            "created_at": "2026-04-11T12:13:38.843133",
+            "_id": "69da3af2af0706b6fcd85d86",
+            "last_active_at": "2026-04-11T14:20:21.958163",
+            "current_location": {
+                "type": "Point",
+                "coordinates": [
+                    85.705688,
+                    20.174194
+                ]
+            },
+            "last_assigned_at": "2026-04-11T12:53:55.192297"
         },
         {
-            "id": "PHLEB-02",
-            "name": "Mike R.",
-            "email": "mike@musb.com",
-            "status": "On Break",
-            "zone": "Brooklyn"
+            "id": "PH-NY-01",
+            "name": "NY Specialist",
+            "email": "ny-spec@musb.com",
+            "password": "MusB2026",
+            "phone": "+1 555-999-0000",
+            "zone": "Manhattan Core",
+            "status": "Online",
+            "is_online": true,
+            "rating": 5.0,
+            "tests_conducted": 1,
+            "performance": {
+                "punctuality": 100,
+                "professionalism": 100,
+                "painless_draw": 100
+            },
+            "reviews": [],
+            "created_at": "2026-04-11T18:00:00.000000",
+            "_id": "69da3af2af0706b6fcd85d88",
+            "last_active_at": "2026-04-11T12:54:07.258463",
+            "current_location": {
+                "type": "Point",
+                "coordinates": [
+                    85.705688,
+                    20.174194
+                ]
+            },
+            "last_assigned_at": "2026-04-11T14:07:00.292675"
         },
         {
-            "id": "PHLEB-03",
-            "name": "Eli W.",
-            "email": "eli@musb.com",
-            "status": "Offline",
-            "zone": "Queens"
-        },
-        {
-            "id": "PHLEB-04",
-            "name": "Jessica K.",
-            "email": "jessica@musb.com",
-            "status": "Active",
-            "zone": "Bronx"
+            "id": "PHLEB-05",
+            "name": "BRIJESH",
+            "email": "BRIJESH@MUSB.COM",
+            "password": "MusB2913",
+            "phone": "",
+            "address": "CARLIFORNIA",
+            "zone": "Manhattan Core",
+            "status": "Registered",
+            "is_online": false,
+            "rating": 5.0,
+            "tests_conducted": 0,
+            "performance": {
+                "punctuality": 100,
+                "professionalism": 100,
+                "painless_draw": 100
+            },
+            "current_location": {
+                "type": "Point",
+                "coordinates": [
+                    36.9579845,
+                    -1.2506469
+                ]
+            },
+            "reviews": [],
+            "created_at": "2026-04-11T14:15:42.450449",
+            "_id": "69da578e6bfcd126e35c59e3"
         }
     ],
     "coverage_zones": [
@@ -424,6 +550,19 @@
             "password": "password123",
             "plan_status": "Premium",
             "_id": "69d50b9a65ed2c02521888b1"
+        },
+        {
+            "name": "Barenya",
+            "company_name": "Other",
+            "email": "test@gmail.com",
+            "office_location": "Carlifornia",
+            "office_contact_number": "+917750067250",
+            "password": "`123456789",
+            "plan_name": "Free Membership",
+            "plan_status": "Active",
+            "renewal_date": "Pending",
+            "created_at": "2026-04-08T11:14:38.292187",
+            "_id": "69d6389e78de0a770497f4a9"
         }
     ],
     "employees": [
@@ -489,7 +628,131 @@
             "_id": "69cbd25235007fa94dbd3a87"
         }
     ],
-    "appointments": [],
+    "appointments": [
+        {
+            "full_name": "Johnathan Aris",
+            "address": "450 Park Avenue, New York, NY",
+            "phone": "+1 (555) 123-4567",
+            "alt_phone": "+1 (555) 987-6543",
+            "test_id": "1",
+            "coordinates": {
+                "type": "Point",
+                "coordinates": [
+                    -73.9715,
+                    40.7614
+                ]
+            },
+            "status": "enroute",
+            "visit_type": "home",
+            "_id": "69d8eaa1eac4c0a81ba94739",
+            "assigned_phlebotomist_id": "PHLEB-01",
+            "approved_at": "2026-04-10T22:58:11.198441",
+            "assigned_at": "2026-04-10T22:58:11.198441"
+        },
+        {
+            "full_name": "Sarah Miller",
+            "address": "150 W 42nd St, New York, NY",
+            "phone": "+1 (555) 222-3333",
+            "alt_phone": "N/A",
+            "test_id": "2",
+            "coordinates": {
+                "type": "Point",
+                "coordinates": [
+                    -73.9855,
+                    40.758
+                ]
+            },
+            "status": "assigned",
+            "visit_type": "home",
+            "_id": "69d8eabd5a7bceb4622c5dfb",
+            "assigned_phlebotomist_id": "PHLEB-01",
+            "approved_at": "2026-04-10T12:19:09.647476",
+            "assigned_at": "2026-04-10T12:19:09.647476"
+        },
+        {
+            "full_name": "Michael Chen",
+            "address": "85 Broad St, New York, NY",
+            "phone": "+1 (555) 444-5555",
+            "alt_phone": "+1 (555) 000-1111",
+            "test_id": "3",
+            "coordinates": {
+                "type": "Point",
+                "coordinates": [
+                    -74.0113,
+                    40.7042
+                ]
+            },
+            "status": "assigned",
+            "visit_type": "home",
+            "_id": "69d8eaf35aed3cc4f3c2ce37",
+            "assigned_phlebotomist_id": "PHLEB-01",
+            "approved_at": "2026-04-10T12:20:03.770702",
+            "assigned_at": "2026-04-10T12:20:03.770702"
+        },
+        {
+            "full_name": "John Doe",
+            "phone": "+1 (555) 123-4567",
+            "alt_phone": "+1 (555) 987-6543",
+            "email": "field@collection.com",
+            "test_id": 1,
+            "preferred_date": "2026-04-11",
+            "preferred_time": "TBD",
+            "visit_type": "home",
+            "address": "123 Main St, New York, NY",
+            "coordinates": {
+                "type": "Point",
+                "coordinates": [
+                    -73.6258356,
+                    40.7105104
+                ]
+            },
+            "status": "assigned",
+            "created_at": "2026-04-11T11:33:58.763596",
+            "_id": "69da31a6af0706b6fcd85d84",
+            "assigned_phlebotomist_id": "5",
+            "approved_at": "2026-04-11T12:53:55.192297",
+            "assigned_at": "2026-04-11T12:53:55.192297"
+        },
+        {
+            "full_name": "Barenya Prasad Mishra",
+            "phone": "1234567890",
+            "alt_phone": "9876543210",
+            "email": "field@collection.com",
+            "test_id": 1,
+            "preferred_date": "2026-04-11",
+            "preferred_time": "TBD",
+            "visit_type": "home",
+            "address": "Gopinathpur,Hatabazar,Jatni\nBhubaneswar, India",
+            "coordinates": null,
+            "status": "pending_approval",
+            "created_at": "2026-04-11T12:06:33.776563",
+            "_id": "69da3949af0706b6fcd85d85"
+        },
+        {
+            "full_name": "Barenya",
+            "phone": "7750067250",
+            "alt_phone": "8144532295",
+            "email": "field@collection.com",
+            "test_id": 1,
+            "preferred_date": "2026-04-11",
+            "preferred_time": "TBD",
+            "visit_type": "home",
+            "address": "123 main street, New York",
+            "coordinates": {
+                "type": "Point",
+                "coordinates": [
+                    -73.6258356,
+                    40.7105104
+                ]
+            },
+            "status": "assigned",
+            "created_at": "2026-04-11T14:06:09.550098",
+            "_id": "69da55516bfcd126e35c59e2",
+            "assigned_phlebotomist_id": "PH-NY-01",
+            "approved_at": "2026-04-11T14:07:00.292675",
+            "assigned_at": "2026-04-11T14:07:00.292675"
+        }
+    ],
     "credits_wallet": [],
     "onsite_requests": [
         {
@@ -605,7 +868,9 @@
             "sample_type": "Blood",
             "turnaround": "24h",
             "icon_name": "Droplet",
-            "_id": "69d4d39c7cd301b7982d0467"
+            "_id": "69d4d39c7cd301b7982d0467",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:17:53.085198"
         },
         {
             "id": 2,
@@ -618,7 +883,9 @@
             "sample_type": "Blood",
             "turnaround": "24h",
             "icon_name": "HeartPulse",
-            "_id": "69d4d39c7cd301b7982d0468"
+            "_id": "69d4d39c7cd301b7982d0468",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:41:31.999354"
         },
         {
             "id": 3,
@@ -631,7 +898,9 @@
             "sample_type": "Blood",
             "turnaround": "24h",
             "icon_name": "Activity",
-            "_id": "69d4d39c7cd301b7982d0469"
+            "_id": "69d4d39c7cd301b7982d0469",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:17:57.820966"
         },
         {
             "id": 4,
@@ -644,7 +913,9 @@
             "sample_type": "Blood",
             "turnaround": "48h",
             "icon_name": "Bone",
-            "_id": "69d4d39c7cd301b7982d046a"
+            "_id": "69d4d39c7cd301b7982d046a",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:17:55.907331"
         },
         {
             "id": 5,
@@ -657,7 +928,9 @@
             "sample_type": "Urine",
             "turnaround": "24h",
             "icon_name": "Activity",
-            "_id": "69d4d39c7cd301b7982d046b"
+            "_id": "69d4d39c7cd301b7982d046b",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:17:59.113770"
         },
         {
             "id": 6,
@@ -670,7 +943,23 @@
             "sample_type": "Swab",
             "turnaround": "48h",
             "icon_name": "FileWarning",
-            "_id": "69d4d39c7cd301b7982d046c"
+            "_id": "69d4d39c7cd301b7982d046c",
+            "is_active": true,
+            "updated_at": "2026-04-09T16:18:00.307877"
+        },
+        {
+            "id": 7,
+            "title": "vitamin",
+            "category_name": "General Wellness",
+            "sample_type": "Blood",
+            "price": "50",
+            "turnaround": "24h",
+            "preparation": "No fasting required",
+            "description": "test",
+            "is_active": true,
+            "created_at": "2026-04-09T20:49:16.259041",
+            "updated_at": "2026-04-09T20:49:16.259495",
+            "_id": "69d7c3749901f6333c7b81f3"
         }
     ],
     "hero_content": [

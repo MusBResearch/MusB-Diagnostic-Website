@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Truck, ArrowRight, ShieldCheck, 
-  MapPin, Phone, Droplets, Lock
+  MapPin, Phone, Droplets, Lock, X, CheckCircle, Loader2
 } from 'lucide-react';
 import './MobilePhlebotomy.css';
 import PhlebotomistLogin from './Login.js';
+import api from '../../api/api';
 
 const MobilePhlebotomy = () => {
-  const [isLoginOpen, setIsLoginOpen] = React.useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [tests, setTests] = useState([]);
+  const [loadingTests, setLoadingTests] = useState(true);
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingStatus, setBookingStatus] = useState('idle'); // idle, submitting, success
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    alt_phone: '',
+    address: ''
+  });
+
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        const res = await api.get('/api/superadmin/catalog/tests/');
+        setTests(res.data.slice(0, 6)); // Just show top 6 for the field page
+      } catch (err) {
+        console.error("Failed to fetch tests", err);
+      } finally {
+        setLoadingTests(false);
+      }
+    };
+    fetchTests();
+  }, []);
 
   const steps = [
     { title: 'Online Request', desc: 'Book your collection through our secure portal or call center.' },
@@ -18,10 +46,45 @@ const MobilePhlebotomy = () => {
     { title: 'Digital Results', desc: 'Access your research-grade results via the secure patient/facility portal.' }
   ];
 
+  const handleBookClick = (test) => {
+    setSelectedTest(test);
+    setIsBookingOpen(true);
+    setBookingStatus('idle');
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setBookingStatus('submitting');
+    try {
+      await api.post('/api/bookings/', {
+        ...formData,
+        test_id: selectedTest.id,
+        visit_type: 'home'
+      });
+      setBookingStatus('success');
+      setTimeout(() => {
+        setIsBookingOpen(false);
+        setFormData({ fullName: '', phone: '', alt_phone: '', address: '' });
+      }, 3000);
+    } catch (err) {
+      alert("Booking failed. Please ensure all fields are filled.");
+      setBookingStatus('idle');
+    }
+  };
+
   return (
     <div className="phlebotomy-page fade-in">
       {/* Hero Section */}
       <section className="phleb-hero">
+        <div className="hero-bg-shapes">
+          <div className="hero-shape hero-shape-1"></div>
+          <div className="hero-shape hero-shape-2"></div>
+          <div className="hero-shape hero-shape-3"></div>
+        </div>
         <motion.div 
           className="phleb-hero-content"
           initial={{ opacity: 0, y: 30 }}
@@ -37,7 +100,7 @@ const MobilePhlebotomy = () => {
             Experience the gold standard of mobile blood collections. We bring the clinic to your home, office, or facility with absolute cold-chain integrity.
           </p>
           <div className="hero-actions">
-            <button className="btn btn-primary btn-lg">Schedule Collection</button>
+            <a href="#test-selection" className="btn btn-primary btn-lg">Schedule Collection</a>
             <button 
               className="btn btn-outline-white btn-lg flex items-center gap-2"
               onClick={() => setIsLoginOpen(true)}
@@ -70,6 +133,146 @@ const MobilePhlebotomy = () => {
         </div>
       </section>
 
+      {/* Test Selection Section */}
+      <section id="test-selection" className="tests-grid-section">
+        <div className="section-header">
+          <h2 className="section-title">Select Your Test</h2>
+          <p className="section-subtitle">Choose from our most popular mobile collection panels. Research-grade accuracy in the comfort of your home.</p>
+        </div>
+
+        {loadingTests ? (
+          <div className="flex justify-center p-20">
+            <Loader2 className="animate-spin text-primary" size={48} />
+          </div>
+        ) : (
+          <div className="test-phleb-grid">
+            {tests.map(test => (
+              <motion.div 
+                key={test.id} 
+                className="test-phleb-card glass"
+                whileHover={{ y: -5 }}
+              >
+                <h3>{test.title}</h3>
+                <p className="text-sm text-slate-500 mb-4">{test.description || 'Comprehensive clinical analysis.'}</p>
+                <div className="test-phleb-price">${parseFloat(test.price).toFixed(2)}</div>
+                <button 
+                  className="btn btn-primary w-full"
+                  onClick={() => handleBookClick(test)}
+                >
+                  Book Now
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Booking Modal */}
+      {/* Booking Modal via Portal for absolute viewport positioning */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isBookingOpen && (
+            <motion.div 
+              key="booking-modal-overlay"
+              className="modal-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setIsBookingOpen(false);
+              }}
+              style={{ zIndex: 999999 }}
+            >
+              <motion.div 
+                key="booking-modal-card"
+                className="booking-modal-content"
+                initial={{ scale: 0.9, opacity: 0, y: 30 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 30 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button className="modal-close" onClick={() => setIsBookingOpen(false)}>
+                  <X size={20} />
+                </button>
+
+                {bookingStatus === 'success' ? (
+                  <div className="booking-success-anim">
+                    <CheckCircle size={80} className="text-emerald-500 mx-auto mb-6" />
+                    <h2>Booking Received!</h2>
+                    <p className="text-slate-600">Our medical logistics team will review your request and assign a specialist shortly.</p>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-2xl font-black mb-2">Book Field Collection</h2>
+                    <p className="text-slate-500 font-bold mb-6">Test: {selectedTest?.title}</p>
+                    
+                    <form onSubmit={handleSubmit} className="booking-form-grid">
+                      <div className="form-field">
+                        <label>Full Patient Name <span>*</span></label>
+                        <input 
+                          type="text" 
+                          name="fullName" 
+                          required 
+                          placeholder="e.g. John Doe"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="form-field">
+                        <label>Primary Phone Number <span>*</span></label>
+                        <input 
+                          type="tel" 
+                          name="phone" 
+                          required 
+                          placeholder="e.g. +1 (555) 000-0000"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="form-field">
+                        <label>Alternative Phone Number <span>*</span></label>
+                        <input 
+                          type="tel" 
+                          name="alt_phone" 
+                          required 
+                          placeholder="Emergency / Alternate contact"
+                          value={formData.alt_phone}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="form-field">
+                        <label>Collection Address <span>*</span></label>
+                        <textarea 
+                          name="address" 
+                          required 
+                          rows="3"
+                          placeholder="Street, Suite, City, State, ZIP"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                        ></textarea>
+                      </div>
+                      
+                      <button 
+                        type="submit" 
+                        className="btn btn-primary btn-lg w-full mt-4 flex items-center justify-center gap-2"
+                        disabled={bookingStatus === 'submitting'}
+                      >
+                        {bookingStatus === 'submitting' ? (
+                          <Loader2 className="animate-spin" size={20} />
+                        ) : (
+                          <><ArrowRight size={20}/> Confirm Booking</>
+                        )}
+                      </button>
+                    </form>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
       {/* How It Works - High Fidelity Timeline */}
       <section id="how-it-works" className="timeline-section">
         <div className="section-header text-center">
@@ -92,7 +295,7 @@ const MobilePhlebotomy = () => {
                 <div className="inner-dot"></div>
               </div>
               <div className="timeline-card glass">
-                <div className="step-number">0{idx + 1}</div>
+                <div className="phleb-step-number">0{idx + 1}</div>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
               </div>
@@ -148,9 +351,9 @@ const MobilePhlebotomy = () => {
         <div className="cta-wrapper glass">
           <h2>Bring the Lab to You Today</h2>
           <p>Professional, convenient, and reliable collections at your location.</p>
-          <button className="btn btn-primary btn-lg mt-4">
+          <a href="#test-selection" className="btn btn-primary btn-lg mt-4 inline-flex items-center gap-2">
             Book Appointment <ArrowRight size={20} />
-          </button>
+          </a>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from django.core.management.commands.runserver import Command as RunserverCommand
-from musb_backend.mongodb import get_client
+
 
 class Command(RunserverCommand):
     """
@@ -12,17 +12,20 @@ class Command(RunserverCommand):
         addrport = options.get('addrport') or '8000'
         port = addrport.split(':')[-1]
         
-        # 2. Check MongoDB Status silently
+        # 2. Check MongoDB status
         try:
-            # Import here to avoid circular imports during startup if any
             from musb_backend import mongodb
-            mongodb.get_client(silent=True)
-            if mongodb._use_fallback:
-                db_status = "Mock DB (Fallback)"
+            from musb_backend.mongodb import MockDatabase
+
+            db = mongodb.get_db()
+            if getattr(settings, 'MONGO_USE_MOCK', False):
+                db_status = "Mock DB (MONGO_USE_MOCK=true)"
+            elif isinstance(db, MockDatabase):
+                db_status = "Mock DB (Mongo unreachable — MONGO_FALLBACK_MOCK)"
             else:
-                db_status = "MongoDB Connected"
-        except Exception:
-            db_status = "Connection Error"
+                db_status = f"MongoDB ({settings.MONGO_DB_NAME})"
+        except Exception as exc:
+            db_status = f"MongoDB error: {exc}"
 
         # 3. Print the Premium Header
         # Using simple ASCII for maximum compatibility across terminals

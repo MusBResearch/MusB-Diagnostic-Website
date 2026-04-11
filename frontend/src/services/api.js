@@ -10,10 +10,15 @@ async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
   const { headers, ...restOptions } = options;
   const config = {
+    method: options.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
       ...headers,
     },
+    cache: 'no-store',
     ...restOptions,
   };
 
@@ -101,6 +106,11 @@ export const employersAPI = {
   getBilling: (token) => request('/employers/billing/', {
     headers: { Authorization: `Bearer ${token}` }
   }),
+  selectPlan: (planId, token) => request('/employers/select-plan/', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ plan_id: planId })
+  }),
 };
 
 // ==================== RESEARCH ====================
@@ -119,4 +129,24 @@ export const researchAPI = {
       method: 'POST',
       body: JSON.stringify({ email }),
     }),
+};
+
+// ==================== SUPER ADMIN ====================
+export const superAdminAPI = {
+  // Catalog Mgt
+  getAdminTests: () => request('/superadmin/catalog/tests/'),
+  createTest: (data) => request('/superadmin/catalog/tests/create/', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+  updateTest: (id, data) => request(`/superadmin/catalog/tests/${id}/`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  }),
+  deleteTest: (id) => request(`/superadmin/catalog/tests/${id}/delete/`, {
+    method: 'DELETE'
+  }),
+  toggleTest: (id) => request(`/superadmin/catalog/tests/${id}/toggle/`, {
+    method: 'PATCH'
+  }),
 };

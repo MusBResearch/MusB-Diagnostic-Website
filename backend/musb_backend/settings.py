@@ -81,8 +81,14 @@ DATABASES = {
 }
 
 # MongoDB Configuration (used by musb_backend/mongodb.py)
+# Default: real MongoDB on localhost. Set MONGO_URI / MONGO_DB_NAME for Atlas or remote.
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017')
 MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'musb_db')
+# Only if true: use backend/mock_db.json instead of MongoDB (offline tests / demos).
+MONGO_USE_MOCK = os.getenv('MONGO_USE_MOCK', '').lower() in ('1', 'true', 'yes')
+# If true: when MongoDB is unreachable, fall back to mock_db.json (default on so local UI works without mongod).
+# Set MONGO_FALLBACK_MOCK=false when your MongoDB server is running and you want hard failures only.
+MONGO_FALLBACK_MOCK = os.getenv('MONGO_FALLBACK_MOCK', 'true').lower() in ('1', 'true', 'yes')
 
 
 

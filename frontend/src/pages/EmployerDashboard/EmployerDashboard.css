@@ -569,3 +569,528 @@
   font-size: 0.85rem;
   font-weight: 600;
 }
+
+/* ====== Onboarding Modal ====== */
+.onboarding-modal {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg-card);
+  padding: 2rem 2.5rem 1.75rem;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 0 25px 70px -12px rgba(0, 0, 0, 0.35);
+  animation: modalScaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid var(--border-card);
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.onboarding-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 0.15rem;
+}
+
+.onboarding-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 1.25rem;
+}
+
+.step-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 800;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border: 2px solid var(--border-main);
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  background: var(--emerald-500);
+  color: white;
+  border-color: var(--emerald-500);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.step-line {
+  width: 120px; height: 3px;
+  background: var(--border-main);
+  border-radius: 2px;
+  transition: all 0.4s ease;
+}
+
+.step-line.filled {
+  background: var(--emerald-500);
+}
+
+/* Form Layout */
+.onboarding-form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ob-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ob-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ob-form-group.full {
+  width: 100%;
+}
+
+.ob-form-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--text-secondary);
+}
+
+.ob-form-group input,
+.ob-form-group select {
+  padding: 0.65rem 0.85rem;
+  border: 2px solid var(--border-main);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: all 0.2s;
+  outline: none;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.ob-form-group input:focus,
+.ob-form-group select:focus {
+  border-color: var(--emerald-500);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+/* Payment Notice */
+.payment-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--emerald-50);
+  border: 1px solid var(--emerald-100);
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--emerald-600);
+  margin-bottom: 0.25rem;
+}
+
+/* Success State */
+.onboarding-success {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.success-checkmark {
+  margin-bottom: 1.5rem;
+  animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkPop {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.onboarding-success h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.onboarding-success p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Modal Overlay from Dashboard */
+.dashboard-container .modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+@media (max-width: 600px) {
+  .ob-form-row {
+    grid-template-columns: 1fr;
+  }
+  .onboarding-modal {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Payment Method Selector */
+.payment-method-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.method-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.65rem;
+  background: var(--bg-input);
+  border: 2px solid var(--border-main);
+  border-radius: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.method-btn span {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.method-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--emerald-500);
+  color: var(--emerald-500);
+  transform: translateY(-2px);
+}
+
+.method-btn.active {
+  background: var(--emerald-500);
+  color: white;
+  border-color: var(--emerald-500);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Card Type Toggle */
+.card-type-toggle {
+  display: flex;
+  background: var(--bg-input);
+  padding: 0.3rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border-main);
+}
+
+.type-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.type-btn.active {
+  background: var(--bg-card);
+  color: var(--emerald-500);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* UPI Section */
+.upi-section {
+  padding: 0.5rem 0;
+}
+
+.upi-input-wrapper {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.upi-input-wrapper input {
+  flex: 1;
+}
+
+.verify-upi-btn {
+  padding: 0 1.25rem;
+  background: var(--bg-input);
+  border: 2px solid var(--border-main);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.verify-upi-btn:hover {
+  border-color: var(--emerald-500);
+  color: var(--emerald-500);
+}
+
+.upi-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* QR Payment Section */
+.qr-payment-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.qr-container {
+  position: relative;
+  padding: 1rem;
+  background: var(--bg-input);
+  border-radius: 20px;
+  border: 2px solid var(--border-main);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.qr-overlay-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--emerald-500);
+  color: var(--emerald-500);
+}
+
+.qr-instructions {
+  text-align: center;
+}
+
+.qr-instructions h4 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+}
+
+.qr-instructions p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.payment-content-area {
+  min-height: auto;
+}
+
+/* ====== Onsite Collections Tab ====== */
+.onsite-tab {
+  padding: 1rem 0;
+}
+
+.onsite-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .onsite-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.onsite-form-container {
+  padding: 2.5rem;
+  border-radius: 20px;
+}
+
+.onsite-form-container h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.onsite-form-container p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.onsite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.onsite-form .form-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.onsite-form .form-group input,
+.onsite-form .form-group textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-main);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.onsite-form .form-group input:focus,
+.onsite-form .form-group textarea:focus {
+  border-color: var(--emerald-500);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.05);
+}
+
+.onsite-info {
+  padding: 2.5rem;
+  border-radius: 20px;
+}
+
+.onsite-info h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rule-item {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.rule-icon-box {
+  width: 48px;
+  height: 48px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--emerald-500);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  flex-shrink: 0;
+}
+
+.rule-text h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.rule-text p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.onsite-promo-card {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.onsite-promo-card::after {
+  content: 'BONUS';
+  position: absolute;
+  top: 10px;
+  right: -30px;
+  background: var(--emerald-500);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 2px 40px;
+  transform: rotate(45deg);
+}
+
+.onsite-promo-card p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--emerald-400);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.onsite-success-view {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.onsite-success-view h3 {
+  font-size: 1.75rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.onsite-success-view p {
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}

@@ -251,3 +251,38 @@ textarea:focus {
     transform: translateY(0);
   }
 }
+
+/* Global Hero Background Shapes (Bubbles Animation) */
+.hero-bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05); /* very subtle white */
+}
+
+.hero-shape-1 { 
+  width: 350px; height: 350px; 
+  top: -100px; right: -80px; 
+  animation: bg-float 9s ease-in-out infinite; 
+}
+.hero-shape-2 { 
+  width: 200px; height: 200px; 
+  bottom: -50px; left: -60px; 
+  animation: bg-float 11s ease-in-out infinite reverse; 
+}
+.hero-shape-3 { 
+  width: 150px; height: 150px; 
+  top: 45%; left: 55%; 
+  animation: bg-float 13s ease-in-out infinite 3s; 
+}
+
+@keyframes bg-float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, -20px); }
+}

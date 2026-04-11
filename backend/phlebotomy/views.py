@@ -57,21 +57,37 @@ def dashboard_stats(request):
     if not user_payload:
         return Response({'error': 'Session expired or invalid.'}, status=401)
 
-    from musb_backend.mongodb import get_db, transform_doc
+    from musb_backend.mongodb import get_db, transform_doc, get_lab_tests_collection
     db = get_db()
     
-    # Live Mission Query
+    # Pre-fetch all tests once and index by ID for O(1) matching
+    all_tests = list(get_lab_tests_collection().find())
+    test_lookup = {str(t.get('id', t['_id'])): t.get('title', 'Unknown Test') for t in all_tests}
+    
+    # Live Test Query (Direct from MongoDB)
+    phleb_id = user_payload.get('user_id')
     coll = db['appointments']
-    all_missions = [transform_doc(m) for m in coll.find()]
-    today_route = [m for m in all_missions if str(m.get('id', '')).startswith('APP-9')]
+    
+    # Query for all tests assigned to THIS phlebotomist
+    raw_appointments = list(coll.find({'assigned_phlebotomist_id': phleb_id}))
+    
+    def enrich_appointment(doc):
+        t_doc = transform_doc(doc)
+        tid = str(t_doc.get('test_id'))
+        t_doc['test_name'] = test_lookup.get(tid, f"Test Ref: {tid}")
+        return t_doc
+
+    today_route = [enrich_appointment(m) for m in raw_appointments]
     
     # Dynamic Next Stop Logic
-    next_stop = next((m for m in today_route if m.get('status') not in ['Completed', 'Issue']), today_route[0] if today_route else None)
+    # Filter for non-completed tasks
+    active_tasks = [m for m in today_route if m.get('status') not in ['Completed', 'Issue', 'completed', 'issue']]
+    next_stop = active_tasks[0] if active_tasks else (today_route[0] if today_route else None)
     active_case = next_stop if next_stop else (today_route[0] if today_route else {})
 
     # Robust Metric Calculations
-    completed_count = len([m for m in today_route if m.get('status') == 'Completed'])
-    issue_count = len([m for m in all_missions if m.get('status') == 'Issue'])
+    completed_count = len([m for m in today_route if m.get('status') in ['Completed', 'completed']])
+    issue_count = len([m for m in today_route if m.get('status') in ['Issue', 'issue']])
 
     # Optimized Field Structure (Dynamically Aware)
     stats = {
@@ -127,9 +143,48 @@ def dashboard_stats(request):
     return Response(stats)
 
 
+@api_view(['PUT'])
+def update_profile(request):
+    """PUT /api/phleb/profile/ — Update phlebotomist profile details."""
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return Response({'error': 'Unauthorized'}, status=401)
+    
+    token = auth_header.split(' ')[1]
+    user_payload = verify_token(token)
+    if not user_payload:
+        return Response({'error': 'Session expired'}, status=401)
+
+    phleb_id = user_payload.get('user_id')
+    data = request.data
+    
+    from musb_backend.mongodb import get_phlebotomists_collection
+    from bson import ObjectId
+    
+    coll = get_phlebotomists_collection()
+    
+    update_fields = {}
+    if 'name' in data: update_fields['name'] = data['name']
+    if 'phone' in data: update_fields['phone'] = data['phone']
+    if 'location' in data: update_fields['location'] = data['location']
+    if 'company' in data: update_fields['company'] = data['company']
+
+    if not update_fields:
+        return Response({'error': 'No fields provided for update'}, status=400)
+
+    # Update in MongoDB
+    result = coll.update_one({'_id': ObjectId(phleb_id)}, {'$set': update_fields})
+    
+    if result.modified_count == 0:
+        # Check if it was a mock ID or just no change
+        return Response({'message': 'Profile updated or no changes needed'})
+
+    return Response({'message': 'Profile successfully synced with command center', 'updated_fields': update_fields})
+
+
 @api_view(['POST'])
-def update_mission_status(request, mission_id):
-    """POST /api/phleb/mission/<id>/status/ — Securely update mission status."""
+def update_test_status(request, test_id):
+    """POST /api/phleb/test/<id>/status/ — Securely update test status."""
     # Auth Check (Reusing verify_token for speed and security)
     auth_header = request.headers.get('Authorization')
     if not auth_header:
@@ -141,23 +196,67 @@ def update_mission_status(request, mission_id):
 
     new_status = request.data.get('status')
     if not new_status:
-        return Response({'error': 'Missing mission status state'}, status=400)
+        return Response({'error': 'Missing test status state'}, status=400)
 
     from musb_backend.mongodb import get_appointments_collection
     from bson import ObjectId
     
     coll = get_appointments_collection()
     
-    # Try to find by custom mission_id (like APP-902) or MongoDB _id
-    update_query = {'id': mission_id}
-    if len(mission_id) == 24: # Likely a MongoID
-        try: update_query = {'_id': ObjectId(mission_id)}
+    # Try to find by custom test_id (like APP-902) or MongoDB _id
+    update_query = {'id': test_id}
+    if len(test_id) == 24: # Likely a MongoID
+        try: update_query = {'_id': ObjectId(test_id)}
         except: pass
 
     result = coll.update_one(update_query, {'$set': {'status': new_status}})
     
     if result.matched_count == 0:
         # For non-persistent mock demo IDs, we return success to allow UI logic to test
-        return Response({'status': 'Mock mission state updated in memory', 'new_status': new_status})
+        return Response({'status': 'Mock test state updated in memory', 'new_status': new_status})
 
-    return Response({'status': 'Mission synced with command center', 'new_status': new_status})
+    return Response({'status': 'Test synced with command center', 'new_status': new_status})
+
+@api_view(['POST'])
+def heartbeat(request):
+    """POST /api/phleb/heartbeat/ — Periodically update location and availability."""
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return Response({'error': 'Unauthorized'}, status=401)
+    
+    token = auth_header.split(' ')[1]
+    user_payload = verify_token(token)
+    if not user_payload:
+        return Response({'error': 'Session expired'}, status=401)
+
+    phleb_id = user_payload.get('user_id')
+    lat = request.data.get('lat')
+    lng = request.data.get('lng')
+    is_online = request.data.get('is_online', True)
+
+    from musb_backend.mongodb import get_phlebotomists_collection
+    from bson import ObjectId
+    import datetime
+    
+    coll = get_phlebotomists_collection()
+    
+    update_fields = {
+        'is_online': is_online,
+        'last_active_at': datetime.datetime.utcnow().isoformat()
+    }
+
+    if lat is not None and lng is not None:
+        update_fields['current_location'] = {
+            'type': 'Point',
+            'coordinates': [float(lng), float(lat)]
+        }
+
+    # Use custom ID matching (handles both MongoID and demo_phleb_1)
+    query = {'_id': ObjectId(phleb_id)} if len(phleb_id) == 24 else {'id': phleb_id}
+    coll.update_one(query, {'$set': update_fields})
+
+    return Response({
+        'status': 'Heartbeat synced',
+        'is_online': is_online,
+        'location_tracked': 'current_location' in update_fields
+    })

@@ -4,26 +4,28 @@
 */
 
 :root {
-  --stellar-bg: #0a0c12;
-  --stellar-card: rgba(255, 255, 255, 0.03);
-  --stellar-border: rgba(255, 255, 255, 0.08);
-  --stellar-accent: #6366f1; /* Electric Indigo */
-  --stellar-accent-glow: rgba(99, 102, 241, 0.15);
-  --stellar-secondary: #fda4af; /* Rose Pearl */
+  --stellar-bg: #03050a; /* Deeper black for higher contrast */
+  --stellar-card: rgba(13, 17, 23, 0.4); /* Deeper translucency */
+  --stellar-card-hover: rgba(13, 17, 23, 0.6);
+  --stellar-border: rgba(255, 255, 255, 0.06);
+  --stellar-border-bright: rgba(255, 255, 255, 0.12);
+  --stellar-accent: #6366f1;
+  --stellar-accent-glow: rgba(99, 102, 241, 0.25);
+  --stellar-secondary: #f43f5e; /* More vibrant rose */
   --stellar-emerald: #10b981;
   --stellar-amber: #f59e0b;
   --stellar-text: #ffffff;
-  --stellar-text-muted: #f1f5f9; /* Slate 100 - significantly brighter for visibility */
-  --stellar-text-high: #ffffff;  /* Pure white for primary data */
-  --stellar-text-soft: #94a3b8;  /* Slate 400 - used only for non-critical hints */
-  --stellar-sidebar: #0d1117;
-  --stellar-glass: blur(24px);
+  --stellar-text-muted: #cbd5e1; /* Slate 300 for better readability */
+  --stellar-text-soft: #64748b; /* Slate 500 */
+  --stellar-sidebar: #05070a;
+  --stellar-glass: blur(16px);
+  --stellar-inner-glow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+  
   /* Spacing Tokens */
   --space-unit: 8px;
-  --space-card: calc(var(--space-unit) * 4); /* 32px standard card padding */
-  --space-module: calc(var(--space-unit) * 6); /* 48px gap between major modules */
-  --space-section: calc(var(--space-unit) * 10); /* 80px gap between sections */
-  --space-header-sub: calc(var(--space-unit) * 3); /* 24px gap between card title and content */
+  --space-card: 28px;
+  --space-module: 32px;
+  --space-section: 64px;
 }
 
 .phleb-dash-wrapper {
@@ -55,6 +57,9 @@
   flex-direction: column;
   padding: 2rem 1.5rem;
   z-index: 100;
+  backdrop-filter: blur(40px);
+  position: fixed;
+  height: 100vh;
 }
 
 .sidebar-logo {
@@ -107,7 +112,8 @@
 .nav-item.active {
   background: var(--stellar-accent);
   color: white;
-  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 20px -5px var(--stellar-accent), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-footer {
@@ -123,6 +129,7 @@
   overflow-y: auto;
   padding: var(--space-module) 3rem;
   position: relative;
+  margin-left: 280px; /* Offset for fixed sidebar */
 }
 
 .phleb-main-content::-webkit-scrollbar { display: none; }
@@ -162,7 +169,58 @@
   position: relative;
   overflow: hidden;
   background: #020408;
-  border-radius: 32px;
+  border-radius: 28px; /* Match phleb-card border-radius */
+}
+
+/* Tactical Zoom Button Animations */
+.map-module button:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px var(--stellar-accent));
+}
+
+.map-module button:active {
+  transform: scale(0.95);
+}
+
+.tactical-zoom-overlay {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  z-index: 9999;
+  display: flex;
+  gap: 12px;
+}
+
+.zoom-btn-base {
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 24px;
+  font-weight: 900;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid white;
+}
+
+.zoom-btn-in {
+  background-color: #ff6600;
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
+}
+
+.zoom-btn-out {
+  background-color: #0d1117;
+  color: #ff6600;
+  border-color: #ff6600;
+}
+
+.zoom-btn-base:active {
+  transform: scale(0.9);
 }
 
 .map-placeholder {
@@ -250,55 +308,329 @@
   color: white;
 }
 
-.workflow-btn.active {
-  background: var(--btn-color);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: white;
-  box-shadow: 0 8px 20px -5px var(--btn-glow);
+/* Animation Utilities */
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* Route List Symmetry */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+.workflow-btn.active {
+  background: var(--btn-color);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  box-shadow: 0 15px 35px -5px var(--btn-color-glow);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Mission Timeline Visualizer */
+.mission-timeline-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+
+.timeline-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--stellar-accent), var(--stellar-emerald));
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 15px var(--stellar-accent);
+}
+
+.timeline-node {
+  position: relative;
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #1a1d23;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+}
+
+.timeline-node.active {
+  background: var(--node-color, var(--stellar-accent));
+  border-color: white;
+  box-shadow: 0 0 15px var(--node-color, var(--stellar-accent));
+  transform: scale(1.3);
+}
+
+.timeline-node.completed {
+  background: var(--stellar-emerald);
+  border-color: var(--stellar-emerald);
+}
+
+.next-stop-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 100px;
+  color: var(--stellar-accent);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.eta-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--stellar-text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Route List Symmetry - Tactical HUD Version */
 .route-item-grid {
   display: grid;
-  grid-template-columns: 80px 1fr 100px;
+  grid-template-columns: 100px 1fr 180px;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.25rem 1.5rem;
+  gap: 2rem;
+  padding: 1.5rem 2rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--stellar-border);
-  border-radius: 20px;
-  transition: all 0.2s;
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.route-item-grid::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 3px;
+  background: var(--indicator-color, var(--stellar-accent));
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 10px var(--indicator-color, var(--stellar-accent));
+  opacity: 0.6;
 }
 
 .route-item-grid:hover {
   background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.route-time-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .route-time {
-  font-size: 0.8rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
   font-weight: 800;
   color: var(--stellar-accent);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
+
+.status-chip {
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  width: fit-content;
+}
+
+.status-chip.completed { color: var(--stellar-emerald); background: rgba(16, 185, 129, 0.1); }
+.status-chip.pending { color: var(--stellar-accent); background: rgba(99, 102, 241, 0.1); }
 
 .route-info h5 {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: white !important;
+  margin-bottom: 4px;
+}
+
+.route-info .test-tag {
+  font-size: 10px;
   font-weight: 900;
-  color: white;
-  margin-bottom: 2px;
+  color: #818cf8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 
-.route-info p {
-  font-size: 0.65rem;
-  color: var(--stellar-text-muted);
+.route-info .address-line {
+  font-size: 11px;
+  color: var(--stellar-text-soft);
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.route-status {
-  text-align: right;
+.route-actions {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--stellar-text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.action-bubble:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.action-bubble.primary {
+  color: var(--stellar-emerald);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.route-details-panel {
+  grid-column: span 3;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.dossier-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 2.5rem;
+}
+
+.briefing-card {
+  padding-right: 2rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.test-desc-long {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.dossier-section h6 {
+  font-size: 9px;
+  font-weight: 900;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+}
+
+.dossier-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.specimen-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.specimen-tag {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 4px 10px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border-radius: 8px;
+}
+
+.instruction-block {
+  padding: 1rem;
+  background: rgba(245, 158, 11, 0.03);
+  border: 1px solid rgba(245, 158, 11, 0.1);
+  border-radius: 12px;
+  color: #fcd34d;
+  font-size: 11px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.details-toggle {
+  grid-column: span 3;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.details-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
 }
 
 /* Case Detail Modules */
@@ -320,11 +652,28 @@
 .phleb-card {
   background: var(--stellar-card);
   border: 1px solid var(--stellar-border);
-  border-radius: 24px;
+  border-radius: 28px;
   padding: var(--space-card);
   position: relative;
   overflow: hidden;
   backdrop-filter: var(--stellar-glass);
+  box-shadow: var(--stellar-inner-glow), 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.full-bleed {
+  padding: 0 !important;
+}
+
+#tactical-map {
+  border-radius: 27px;
+}
+
+
+.phleb-card:hover {
+  border-color: var(--stellar-border-bright);
+  box-shadow: var(--stellar-inner-glow), 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
 }
 
 .case-profile-card {
@@ -428,14 +777,17 @@
 .col-span-12 { grid-column: span 12 / span 12; }
 .col-span-8 { grid-column: span 8 / span 8; }
 .col-span-7 { grid-column: span 7 / span 7; }
+.col-span-6 { grid-column: span 6 / span 6; }
 .col-span-5 { grid-column: span 5 / span 5; }
 .col-span-4 { grid-column: span 4 / span 4; }
 
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid { display: grid; }
-.gap-4 { gap: 1rem; }
-.gap-6 { gap: 1.5rem; }
-.gap-8 { gap: 2rem; }
+.gap-8 { gap: 2.5rem; }
+.gap-10 { gap: 3rem; }
 
 .admin-unit-card {
   display: flex;
@@ -694,8 +1046,80 @@
   filter: grayscale(1);
 }
 
-/* State Background Shifts */
-.phleb-dash-wrapper.state-indigo .mesh-blob { background: var(--stellar-accent); }
+/* Stellar Mesh Background Animation */
+.stellar-mesh-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.mesh-blob {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--stellar-accent) 0%, transparent 70%);
+  filter: blur(80px);
+  border-radius: 50%;
+  opacity: 0.15;
+  animation: drift 20s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.mesh-blob:nth-child(2) {
+  background: radial-gradient(circle, var(--stellar-secondary) 0%, transparent 70%);
+  animation-duration: 25s;
+  animation-delay: -5s;
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(10%, 15%) scale(1.1); }
+  100% { transform: translate(-5%, 10%) scale(0.9); }
+}
+
+/* Tactical HUD Elements */
+.map-module::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(0deg, rgba(99, 102, 241, 0.05) 50%, transparent 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.radar-scan-line {
+  position: absolute;
+  top: 0; width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--stellar-accent), transparent);
+  animation: scanVertical 4s linear infinite;
+  z-index: 10;
+  opacity: 0.5;
+}
+
+@keyframes scanVertical {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Button Shimmer Effect */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+  transition: 0.5s;
+}
 .phleb-dash-wrapper.state-arrived .mesh-blob { background: var(--stellar-amber); }
 .phleb-dash-wrapper.state-collected .mesh-blob { background: var(--stellar-emerald); }
 .phleb-dash-wrapper.state-issue .mesh-blob { background: #ef4444; opacity: 0.3; filter: blur(80px); }
@@ -969,4 +1393,229 @@
   .phleb-form-group.full-width {
     grid-column: span 1;
   }
+}
+/* Tactical Map Enhancements */
+.tactical-ping-icon {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-ping {
+  width: 12px;
+  height: 12px;
+  background: var(--stellar-accent);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--stellar-accent);
+  position: relative;
+}
+
+.radar-ping::after {
+  content: '';
+  position: absolute;
+  top: -10px; left: -10px; right: -10px; bottom: -10px;
+  border: 2px solid var(--stellar-accent);
+  border-radius: 50%;
+  animation: radarRipple 2s infinite;
+  opacity: 0;
+}
+
+@keyframes radarRipple {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.tactical-popup .leaflet-popup-content-wrapper {
+  background: rgba(13, 17, 23, 0.9) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 16px !important;
+  padding: 4px !important;
+}
+
+.tactical-popup .leaflet-popup-tip {
+  background: rgba(13, 17, 23, 0.9) !important;
+}
+
+/* Ensure map container is visible */
+#tactical-map {
+  background: #020408 !important;
+  z-index: 10;
+}
+/* --- Specialist Dossier & Performance Styles --- */
+
+.shadow-text {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-success:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.4);
+}
+
+.phleb-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.phleb-input:focus {
+  border-color: var(--stellar-accent);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Dashboard Metric Enhancements */
+.phleb-card.active-duty-card {
+  border-left: 4px solid #10b981;
+}
+
+.wallet-gradient-bg {
+  background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent);
+}
+
+.metric-value-glow {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.ledger-item-hover:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(8px);
+}
+
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+/* Advanced HUD Scanning Effect */
+.phleb-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+  transform: skewX(-25deg);
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.phleb-card:hover::after {
+  left: 150%;
+  transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.phleb-card-hud-border {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 28px;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), transparent 40%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.metric-chart-container {
+  height: 60px;
+  width: 100%;
+  margin-top: auto;
+  opacity: 0.8;
+}
+
+.glow-indigo { filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); }
+.glow-emerald { filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4)); }
+.glow-amber { filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4)); }
+
+/* Tactical HUD Notifications */
+.tactical-notification {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 17, 23, 0.95);
+  border: 1px solid var(--stellar-accent);
+  border-bottom: 3px solid var(--stellar-accent);
+  padding: 20px 40px;
+  border-radius: 20px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.3);
+  backdrop-filter: blur(20px);
+}
+
+.tactical-notification-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--stellar-accent);
+}
+
+/* Button Processing States */
+.btn-processing {
+  pointer-events: none;
+  opacity: 0.8;
+  filter: grayscale(0.5);
+  position: relative;
+}
+
+.tactical-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: tact-spin 0.6s linear infinite;
+}
+
+@keyframes tact-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Review Modal Enhancements */
+.review-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 24px;
+  border-radius: 24px;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.review-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-4px);
 }

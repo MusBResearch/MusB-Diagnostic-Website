@@ -1,0 +1,618 @@
+/* ========================================
+   Offers Engine — Super Admin Console
+   ======================================== */
+
+.offers-engine {
+    position: relative;
+}
+
+/* Toast Notification */
+.oe-toast {
+    position: fixed;
+    top: calc(var(--admin-header-height, 70px) + 1rem);
+    right: 2rem;
+    z-index: 999;
+    padding: 0.85rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.oe-toast.success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+}
+
+.oe-toast.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+/* Header */
+.oe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.oe-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 0 0 24px rgba(16, 185, 129, 0.2);
+}
+
+.oe-subtitle {
+    font-size: 0.95rem;
+    color: var(--admin-text-secondary);
+    margin-top: 0.4rem;
+}
+
+.oe-create-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    padding: 0.85rem 1.75rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+    transition: box-shadow 0.3s;
+    white-space: nowrap;
+}
+
+.oe-create-btn:hover {
+    box-shadow: 0 8px 35px rgba(16, 185, 129, 0.5);
+}
+
+/* KPI Strip */
+.oe-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.oe-kpi {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.oe-kpi:hover {
+    border-color: var(--admin-accent);
+    transform: translateY(-2px);
+}
+
+.oe-kpi.active-kpi {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.oe-kpi-value {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.oe-kpi-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--admin-text-secondary);
+    margin-top: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+/* Table */
+.oe-table-wrap {
+    background: var(--admin-card-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.oe-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.oe-table thead {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.oe-table th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--admin-text-secondary);
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.oe-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+    vertical-align: middle;
+}
+
+.oe-table tbody tr {
+    transition: background 0.2s;
+}
+
+.oe-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.oe-table tbody tr.inactive-row {
+    opacity: 0.5;
+}
+
+.oe-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Offer Cell */
+.oe-offer-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.oe-offer-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #f1f5f9;
+}
+
+.oe-offer-meta {
+    font-size: 0.8rem;
+    color: var(--admin-text-secondary);
+}
+
+/* Type Badge */
+.oe-type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.type-weekly {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.type-monthly {
+    background: rgba(225, 29, 72, 0.15);
+    color: #fb7185;
+}
+
+.type-seasonal {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+/* Price Cell */
+.oe-price-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.oe-price-strike {
+    font-size: 0.8rem;
+    color: var(--admin-text-secondary);
+    text-decoration: line-through;
+}
+
+.oe-price-final {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #10b981;
+}
+
+/* Toggle Button */
+.oe-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.oe-toggle-btn.live {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.oe-toggle-btn.paused {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.oe-toggle-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.oe-toggle-btn.live .oe-toggle-dot {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    animation: oe-pulse 2s infinite;
+}
+
+.oe-toggle-btn.paused .oe-toggle-dot {
+    background: #f59e0b;
+}
+
+@keyframes oe-pulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.4); }
+    50% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.8); }
+}
+
+/* Action Buttons */
+.oe-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.oe-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.oe-action-btn.edit:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: #3b82f6;
+}
+
+.oe-action-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+}
+
+.oe-delete-confirm {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.oe-action-btn.confirm-yes {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-color: #ef4444;
+    font-weight: 700;
+}
+
+.oe-action-btn.confirm-no {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--admin-text-secondary);
+}
+
+.oe-empty {
+    text-align: center;
+    padding: 3rem !important;
+    color: var(--admin-text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ==================== MODAL ==================== */
+.oe-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.oe-modal {
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--admin-sidebar);
+    border: 1px solid var(--admin-border);
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+}
+
+.oe-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.oe-modal-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.oe-modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    color: var(--admin-text-secondary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.oe-modal-close:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+/* Form */
+.oe-form {
+    padding: 2rem;
+}
+
+.oe-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.oe-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.oe-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.oe-field label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--admin-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.oe-field input,
+.oe-field select {
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    color: #f1f5f9;
+    padding: 0.75rem 1rem;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.oe-field input:focus,
+.oe-field select:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+}
+
+.oe-field input::placeholder {
+    color: #475569;
+}
+
+/* Publish Toggle */
+.oe-publish-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.oe-pub-btn {
+    flex: 1;
+    padding: 0.65rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    color: var(--admin-text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oe-pub-btn.active {
+    border-color: var(--admin-accent);
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+}
+
+/* Includes Section */
+.oe-includes-section {
+    margin-bottom: 1.5rem;
+}
+
+.oe-include-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.oe-include-row input {
+    flex: 1;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    color: #f1f5f9;
+    padding: 0.6rem 0.85rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.oe-include-row input:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+}
+
+.oe-remove-include {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.oe-remove-include:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.oe-add-include {
+    background: transparent;
+    border: 1px dashed var(--admin-border);
+    color: var(--admin-accent);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.oe-add-include:hover {
+    border-color: var(--admin-accent);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+/* Form Actions */
+.oe-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.oe-cancel-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--admin-border);
+    background: transparent;
+    color: var(--admin-text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oe-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.oe-submit-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 0.6rem;
+    border: none;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+    transition: all 0.2s;
+}
+
+.oe-submit-btn:hover {
+    box-shadow: 0 6px 30px rgba(16, 185, 129, 0.4);
+}
+
+.oe-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Delete Overlay (subtle backdrop) */
+.oe-delete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+    .oe-header {
+        flex-direction: column;
+    }
+
+    .oe-kpi-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .oe-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .oe-table-wrap {
+        overflow-x: auto;
+    }
+
+    .oe-table {
+        min-width: 700px;
+    }
+}

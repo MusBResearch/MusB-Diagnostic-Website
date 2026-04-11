@@ -54,6 +54,11 @@ const ResearchCentralLab = () => {
     <div className="research-page fade-in">
       {/* Hero Section */}
       <section className="research-hero">
+        <div className="hero-bg-shapes">
+          <div className="hero-shape hero-shape-1"></div>
+          <div className="hero-shape hero-shape-2"></div>
+          <div className="hero-shape hero-shape-3"></div>
+        </div>
         <motion.div 
           className="research-hero-content"
           initial={{ opacity: 0, y: 30 }}

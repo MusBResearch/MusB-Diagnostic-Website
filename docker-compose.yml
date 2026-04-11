@@ -1,0 +1,14 @@
+# Local MongoDB for MusB backend (default MONGO_URI=mongodb://localhost:27017)
+# Start: docker compose up -d
+# Then: MONGO_FALLBACK_MOCK=false in .env if you use only real MongoDB.
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - musb_mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  musb_mongo_data:

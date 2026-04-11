@@ -1,58 +1,100 @@
 """
 MongoDB connection utility for MusB Diagnostic Backend.
 
-Usage in views/services:
-    from musb_backend.mongodb import get_db
+Default: real MongoDB (MONGO_URI, MONGO_DB_NAME in settings). No silent fallback to JSON.
 
+Optional offline mode: set environment variable MONGO_USE_MOCK=true to use mock_db.json.
+
+Usage:
+    from musb_backend.mongodb import get_db
     db = get_db()
-    collection = db['tests']
-    results = collection.find({'category': 'blood'})
+    results = db['tests'].find({'category': 'blood'})
 """
 
 import json
+import os
 from pathlib import Path
 from pymongo import MongoClient
 from django.conf import settings
 import certifi
 
 _client = None
-_use_fallback = False
-_db_instance = None # Singleton Instance
+_db_instance = None  # Singleton: real Database or MockDatabase
+
+
+def _mongo_client_options(uri):
+    """TLS only for Atlas / SRV / explicit tls — not for plain mongodb://localhost."""
+    timeout_ms = int(os.getenv('MONGO_SERVER_SELECTION_TIMEOUT_MS', '10000'))
+    opts = {'serverSelectionTimeoutMS': timeout_ms}
+    ul = uri.lower()
+    if uri.startswith('mongodb+srv://') or 'tls=true' in ul or 'ssl=true' in ul:
+        opts['tlsCAFile'] = certifi.where()
+    return opts
+
+
+def reset_mongo_connection():
+    """Reset singletons (e.g. tests). Call before switching MONGO_USE_MOCK."""
+    global _client, _db_instance
+    if _client is not None:
+        try:
+            _client.close()
+        except Exception:
+            pass
+    _client = None
+    _db_instance = None
+
 
 def get_client(silent=False):
-    """Get or create singleton MongoClient with fallback detection."""
-    global _client, _use_fallback
-    if _client is None and not _use_fallback:
+    """Return a connected MongoClient. Raises if MongoDB is unreachable (unless MONGO_USE_MOCK)."""
+    global _client
+    if getattr(settings, 'MONGO_USE_MOCK', False):
+        return None
+    if _client is None:
+        uri = settings.MONGO_URI
+        opts = _mongo_client_options(uri)
         try:
-            # Using certifi for secure Atlas connection
-            _client = MongoClient(
-                settings.MONGO_URI, 
-                tlsCAFile=certifi.where(),
-                serverSelectionTimeoutMS=5000  # 5-second timeout for rapid fallback
-            )
-            # Force a connection check
+            _client = MongoClient(uri, **opts)
             _client.admin.command('ping')
             if not silent:
-                print("✅ Successfully connected to MongoDB Atlas!")
+                print(f"SUCCESS: Connected to MongoDB ({settings.MONGO_DB_NAME})")
         except Exception as e:
-            if not silent:
-                print(f"⚠️  WARNING: MongoDB Atlas connection failed: {e}")
-                print("🚀 Switching to Local Mock Database (backend/mock_db.json)")
-            _use_fallback = True
             _client = None
+            if not silent:
+                print(f"ERROR: MongoDB connection failed: {e}")
+            raise ConnectionError(
+                f"Cannot connect to MongoDB (URI={uri!r}). "
+                "Start mongod, fix MONGO_URI for Atlas, or set MONGO_USE_MOCK=true to use mock_db.json."
+            ) from e
     return _client
 
 
 def get_db():
-    """Get the database instance (Singleton)."""
+    """Singleton database: real MongoDB by default, or MockDatabase if MONGO_USE_MOCK / fallback."""
     global _db_instance
     if _db_instance is None:
-        client = get_client()
-        if _use_fallback or client is None:
+        if getattr(settings, 'MONGO_USE_MOCK', False):
             _db_instance = MockDatabase()
         else:
-            _db_instance = client[settings.MONGO_DB_NAME]
+            try:
+                client = get_client()
+                _db_instance = client[settings.MONGO_DB_NAME]
+            except ConnectionError:
+                if getattr(settings, 'MONGO_FALLBACK_MOCK', False):
+                    print(
+                        "WARNING: MongoDB unreachable — using mock_db.json. "
+                        "Start MongoDB or set MONGO_URI, then set MONGO_FALLBACK_MOCK=false."
+                    )
+                    _db_instance = MockDatabase()
+                else:
+                    raise
     return _db_instance
+
+
+def is_mock_database():
+    """True when using file-backed mock (forced or fallback)."""
+    if getattr(settings, 'MONGO_USE_MOCK', False):
+        return True
+    return isinstance(get_db(), MockDatabase)
 
 
 class MongoJSONEncoder(json.JSONEncoder):
@@ -74,7 +116,7 @@ class MockDatabase:
             with open(self.path, 'r', encoding='utf-8') as f:
                 self.data = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"⚠️ [MOCK DB] Data Load Warning: {e}")
+            print(f"WARNING: [MOCK DB] Data Load Warning: {e}")
             self.data = {}
 
     def _set_paths(self):
@@ -91,9 +133,9 @@ class MockDatabase:
             # Use custom encoder to handle ObjectId and datetime
             with open(self.path, 'w') as f:
                 json.dump(self.data, f, indent=4, cls=MongoJSONEncoder)
-            print(f"💾 [MOCK DB] Changes persisted to {self.path}")
+            print(f"INFO: [MOCK DB] Changes persisted to {self.path}")
         except Exception as e:
-            print(f"❌ [MOCK DB] Error saving to file: {e}")
+            print(f"ERROR: [MOCK DB] Error saving to file: {e}")
 
 
 class MockCollection:
@@ -117,6 +159,29 @@ class MockCollection:
         # Support exact matches (category_name, sample_type, etc.)
         for key, val in query.items():
             if key == 'title' or isinstance(val, dict):
+                # Handle geospatial simulation ($nearSphere)
+                if isinstance(val, dict) and '$nearSphere' in val:
+                    from musb_backend.geocoding import haversine_meters
+                    target_geo = val['$nearSphere']['$geometry']
+                    max_dist = val['$nearSphere'].get('$maxDistance', float('inf'))
+
+                    target_lng, target_lat = target_geo['coordinates']
+
+                    def distance_meters(item):
+                        loc = item.get('current_location', {})
+                        if not loc or 'coordinates' not in loc:
+                            return float('inf')
+                        ilng, ilat = loc['coordinates']
+                        return haversine_meters(
+                            float(target_lng), float(target_lat),
+                            float(ilng), float(ilat),
+                        )
+
+                    filtered = [
+                        item for item in filtered
+                        if distance_meters(item) <= max_dist
+                    ]
+                    filtered.sort(key=distance_meters)
                 continue
             if val and val != 'All':
                 # Precise comparison: Convert both to strings (handles ObjectId vs string)
@@ -135,7 +200,7 @@ class MockCollection:
             from bson import ObjectId
             doc['_id'] = ObjectId()
             
-        print(f"📝 [MOCK] Saving to local mock DB memory: {doc}")
+        print(f"INFO: [MOCK] Saving to local mock DB memory: {doc}")
         
         # Add to the correct collection in the DB object
         if self.name not in self.db.data:
@@ -164,10 +229,13 @@ class MockCollection:
 
     def delete_one(self, query):
         """Mock delete_one: removes ONLY the first item matching the query and persists."""
-        if not query: return False
+        class DeleteResult:
+            def __init__(self, count): self.deleted_count = count
+
+        if not query: return DeleteResult(0)
         
         if self.name not in self.db.data:
-            return False
+            return DeleteResult(0)
             
         target_idx = -1
         # Explicit search for the first match
@@ -192,22 +260,70 @@ class MockCollection:
         if target_idx != -1:
             # Atomic removal of exactly one record
             removed_item = self.db.data[self.name].pop(target_idx)
-            print(f"🗑️ [MOCK DB] Deleted 1 record from {self.name}: {removed_item.get('_id')}")
+            print(f"INFO: [MOCK DB] Deleted 1 record from {self.name}: {removed_item.get('_id')}")
             self.items = self.db.data[self.name]
             self.db._save()
-            return True
+            return DeleteResult(1)
             
-        return False
+        return DeleteResult(0)
 
     def delete_many(self, query):
         """Mock delete_many: removes all items (for now supports clearing the whole collection)."""
+        class DeleteResult:
+            def __init__(self, count): self.deleted_count = count
+
         # For seed_db purposes, we usually pass {} to clear all
         if self.name in self.db.data:
+            count = len(self.db.data[self.name])
             self.db.data[self.name] = []
             self.items = []
             self.db._save()
-            return True
-        return False
+            return DeleteResult(count)
+        return DeleteResult(0)
+
+    def update_one(self, query, update):
+        """Mock update_one: updates the first matching document with $set fields."""
+        if not query or not update:
+            return None
+
+        set_fields = update.get('$set', {})
+        if not set_fields:
+            return None
+
+        if self.name not in self.db.data:
+            return None
+
+        for item in self.db.data[self.name]:
+            is_match = True
+            for key, val in query.items():
+                from bson import ObjectId
+                db_val = item.get(key)
+                norm_query_val = str(val) if isinstance(val, ObjectId) else val
+                norm_db_val = str(db_val) if isinstance(db_val, ObjectId) else db_val
+                if norm_db_val != norm_query_val:
+                    is_match = False
+                    break
+
+            if is_match:
+                for field, value in set_fields.items():
+                    item[field] = value
+                self.items = self.db.data[self.name]
+                self.db._save()
+                print(f"INFO: [MOCK DB] Updated 1 record in {self.name}")
+
+                class UpdateResult:
+                    modified_count = 1
+                return UpdateResult()
+
+        class UpdateResult:
+            modified_count = 0
+        return UpdateResult()
+
+    def count_documents(self, query=None):
+        """Mock count_documents: returns the count of matching documents."""
+        if not query:
+            return len(self.items)
+        return len(self.find(query))
 
 
 def close_connection():
@@ -219,12 +335,19 @@ def close_connection():
 
 
 def transform_doc(doc):
-    """Transforms documents for API response, handling both real and mock formats."""
+    """Transforms documents for API response, handling both real and mock formats.
+    Preserves existing 'id' field if present (e.g. seed data), otherwise uses '_id'.
+    """
     if not doc or not isinstance(doc, dict):
         return {}
     new_doc = doc.copy()
     if '_id' in new_doc:
-        new_doc['id'] = str(new_doc.pop('_id'))
+        if 'id' not in new_doc:
+            # No explicit id — use the MongoDB _id
+            new_doc['id'] = str(new_doc.pop('_id'))
+        else:
+            # Explicit id exists (seed data) — just remove _id
+            new_doc.pop('_id')
     return new_doc
 
 # --- MusB Employer & Portal Specific Helpers ---

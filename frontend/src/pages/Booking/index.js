@@ -14,7 +14,8 @@ const Booking = () => {
     testId: '',
     date: '',
     timeSlot: '',
-    visitType: 'home'
+    visitType: 'home',
+    address: ''
   });
 
   useEffect(() => {
@@ -144,6 +145,21 @@ const Booking = () => {
                 </select>
               </div>
             </div>
+
+            {formData.visitType === 'home' && (
+              <div className="form-group slide-down">
+                <label className="form-label">Collection Address</label>
+                <input 
+                  type="text" 
+                  name="address"
+                  required 
+                  placeholder="Street, Apartment, City, Zip Code" 
+                  value={formData.address}
+                  onChange={handleChange}
+                />
+                <p className="text-xs text-slate-500 mt-1">Our specialist will arrive within 5 miles of this location.</p>
+              </div>
+            )}
 
             <div className="form-group">
               <label className="form-label">Visit Type</label>
