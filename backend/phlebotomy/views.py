@@ -190,8 +190,9 @@ def update_profile(request):
     if not update_fields:
         return Response({'error': 'No fields provided for update'}, status=400)
 
-    # Update in MongoDB
-    result = coll.update_one({'_id': ObjectId(phleb_id)}, {'$set': update_fields})
+    # Expert fix: Handle both MongoID and demo string IDs safely
+    query = {'_id': ObjectId(phleb_id)} if len(phleb_id) == 24 else {'id': phleb_id}
+    result = coll.update_one(query, {'$set': update_fields})
     
     if result.modified_count == 0:
         # Check if it was a mock ID or just no change

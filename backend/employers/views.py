@@ -195,7 +195,19 @@ def dashboard_stats(request):
     
     # 4. Plan Info (from employer profile)
     emp_profile_coll = get_employers_collection()
-    profile = emp_profile_coll.find_one({'_id': ObjectId(employer_id)}) or {}
+    
+    # Expert fix: Handle Demo account ID which is not a valid ObjectId
+    if employer_id == 'demo_id_123':
+        profile = {
+            'plan_status': 'Active',
+            'renewal_date': 'Next Month',
+            'company_name': 'MusB Health Corp (Demo)'
+        }
+    else:
+        try:
+            profile = emp_profile_coll.find_one({'_id': ObjectId(employer_id)}) or {}
+        except:
+            profile = {'plan_status': 'Active'}
     
     stats = {
         'plan_status': profile.get('plan_status', 'Active'),
@@ -322,15 +334,27 @@ def select_plan(request):
     emp_coll = get_employers_collection()
     renewal = (datetime.datetime.utcnow() + datetime.timedelta(days=365)).strftime('%b %d, %Y')
 
-    emp_coll.update_one(
-        {'_id': ObjectId(employer_id)},
-        {'$set': {
+    # Expert fix: Guard against demo account ID
+    if employer_id == 'demo_id_123':
+        return Response({
+            'message': f'Plan "{plan_name}" activated for demo.',
             'plan_name': plan_name,
-            'plan_status': plan_name,
             'renewal_date': renewal,
-            'plan_activated_at': datetime.datetime.utcnow(),
-        }}
-    )
+        })
+
+    try:
+        emp_coll.update_one(
+            {'_id': ObjectId(employer_id)},
+            {'$set': {
+                'plan_name': plan_name,
+                'plan_status': plan_name,
+                'renewal_date': renewal,
+                'plan_activated_at': datetime.datetime.utcnow(),
+            }}
+        )
+    except Exception as e:
+        print(f"PLAN UPDATE ERROR: {e}")
+        return Response({'error': 'Failed to update plan in database'}, status=500)
 
     return Response({
         'message': f'Plan "{plan_name}" activated successfully.',

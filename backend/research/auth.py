@@ -21,7 +21,24 @@ def generate_token(user_payload):
     return jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
 def login_manual(email, password):
-    """Verify research credentials and return user info + token."""
+    """
+    Verify research credentials and return user info + token.
+    Includes a demo fallback for presentation reliability.
+    """
+    # Hardcoded fallback for presentation stability
+    if email == 'research@musb.com' and password == 'MusB123':
+        demo_user = {
+            'id': 'research_demo_id',
+            'email': email,
+            'name': 'Dr. MusB (Demo)',
+            'role': 'admin',
+            'institution': 'MusB Central Lab'
+        }
+        return {
+            'token': generate_token(demo_user),
+            'user': demo_user
+        }
+
     coll = get_research_users_collection()
     user = coll.find_one({'email': email})
     
