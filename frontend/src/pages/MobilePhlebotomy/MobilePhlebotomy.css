@@ -5,12 +5,16 @@
               url('./mobile_phleb_hero.png');
   background-size: cover;
   background-position: center;
-  padding: 10rem 2rem 8rem 2rem; /* Extra top for header spacing */
+  padding: 8rem 2rem 6rem 2rem; /* Optimized top/bottom spacing */
   text-align: center;
   color: white;
   position: relative;
   overflow: hidden;
   border-radius: 0 0 50px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh; /* Ensure hero has presence */
 }
 
 .hero-badge-phleb {
@@ -28,11 +32,11 @@
 }
 
 .phleb-hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 1.25; /* Expert Refinement: More breathing room */
   margin-bottom: 2rem;
-  color: #ffffff !important; /* White for readability on dark background */
+  color: #ffffff !important;
 }
 
 .phleb-hero-title span {
@@ -42,8 +46,28 @@
 .phleb-hero-subtitle {
   font-size: 1.25rem;
   max-width: 800px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 3.5rem auto; /* Expert Spacing */
   opacity: 0.9;
+  line-height: 1.7; /* Premium readability */
+}
+
+.phleb-hero-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .phleb-stats {

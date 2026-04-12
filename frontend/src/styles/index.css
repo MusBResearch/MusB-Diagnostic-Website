@@ -74,8 +74,8 @@ ul {
 
 main {
   flex-grow: 1;
-  padding-top: 80px;
-  /* Space for fixed navbar */
+  /* Expert Fix: Use a safer padding-top that doesn't conflict with hero-section padding */
+  margin-top: 0;
 }
 
 /* Glassmorphism Utilities */
@@ -211,6 +211,23 @@ main {
   margin-bottom: 3rem;
   color: var(--text-muted);
   font-size: 1.15rem;
+}
+
+/* Expert Hero Utilities - Global fixes for stretching and centering */
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.hero-content-expert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 /* Form inputs global */
